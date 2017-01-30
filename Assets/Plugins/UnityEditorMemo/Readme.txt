@@ -13,6 +13,7 @@
 	You can use this asset from MenuBar, Window > UnityEdiorMemo.
 	When opening the window, then post any texts on it.
 	You can add a category of memo. Press plus button, and input the category name, then press register button.
+	You can see more detail about this asset. > https://www.youtube.com/watch?v=4dTdScqtWM4
 
 Åú Attension
 	You can move UnityEditorMemo's folder to any folder, but you must not edit the child folder's structure.
