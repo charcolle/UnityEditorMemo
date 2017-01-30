@@ -57,7 +57,7 @@ namespace Charcolle.UnityEditorMemo {
         private const string SEARCH_MEMO_KEYWORD        = "t:UnityMemoSaveClass";
         private const string SEARCH_DIR_KEYWORD         = "UnityEditorMemoWindow";
 
-        private const string ERROR_SEARCH_NOTFOUND      = "UnityEditorMemoWindow: Memos not found. :";
+        private const string ERROR_SEARCH_NOTFOUND      = "UnityEditorMemoWindow: Memos not found. ";
         private const string ERROR_SEARCH_ROOTNOTFOUND  = "UnityEditorMemoWindow: Root Directory not Found. Serious error.";
         private const string ERROR_CREATE_MEMOSAVE      = "UnityEditorMemoWindow: This category already exist. :";
         private const string ERROR_CATEGORY_EMPTY       = "UnityEditorMemoWindow: Category cannot be empty.";
@@ -113,8 +113,9 @@ namespace Charcolle.UnityEditorMemo {
             LoadUnityEditorMemoSaveDatas();
 
             if ( selectId >= CategoryNameArray.Length ) {
-                Debug.LogError( ERROR_SERIOUS );
+                //Debug.LogError( ERROR_SERIOUS );
                 ScriptableSingleton<UnityEditorMemoWindowSave>.instance.selectCategoryId = 0;
+                LoadUnityEditorMemoCategory( CategoryNameArray[0] );
                 return;
             }
 
@@ -137,7 +138,12 @@ namespace Charcolle.UnityEditorMemo {
                 }
             }
             AssetDatabase.Refresh();
+
             LoadUnityEditorMemoSaveDatas();
+            if ( CategoryNameArray != null || CategoryNameArray.Length != 0 )
+                LoadUnityEditorMemoCategory( CategoryNameArray[0] );
+            else
+                Debug.LogError( ERROR_SERIOUS );
         }
 
         public static void PostMemo( UnityMemoClass postMemo ) {
