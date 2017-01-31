@@ -1,7 +1,9 @@
 # UnityEditorMemo
 ***
-You can post any text on unityeditor.
-More detail <https://www.youtube.com/watch?v=4dTdScqtWM4>
+You can post any text on unityeditor.  
+More detail <https://www.youtube.com/watch?v=4dTdScqtWM4>   
+  
+! This project was made with unity5.5.0f3 
 
 ![unityeditormemo_screenshot](https://github.com/charcolle/UnityEditorMemo/blob/master/unityEditorMemo_ScreenShot.png?raw=true)
 
