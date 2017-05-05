@@ -1,5 +1,4 @@
 # UnityEditorMemo ver1.1
-You can get this asset from UnityAssetStore! <https://www.assetstore.unity3d.com/jp/#!/content/81812>
 ***
 You can post any text on UnityEditor.  
 More detail <https://www.youtube.com/watch?v=4dTdScqtWM4>   
