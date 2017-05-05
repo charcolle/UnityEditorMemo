@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.IO;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace Charcolle.UnityEditorMemo {
@@ -9,18 +10,19 @@ namespace Charcolle.UnityEditorMemo {
         //======================================================================
         // Window Varies
         //======================================================================
-        public static Vector2  WINDOW_SIZE  = new Vector2( 350f, 600f );
+        public static Vector2  WINDOW_SIZE  = new Vector2( 350f, 400f );
         public const string WINDOW_TITLE    = "Unity Memo";
 
         public static GUILayoutOption WINDOW_MAX_SIZE;
         public static UnityEditorMemoSplitterState VerticalState;
         public static GUIStyle LABEL_WORDWRAP_STYLE;
         public static GUIStyle TEXTAREA_WORDWRAP_STYLE;
+        public static GUIStyle NO_SPACE_BOX_STYLE;
         public static GUIStyle GUISKIN_BOX_STYLE;
         
         public static Texture2D[] WINDOW_MENU;
         public static string[] POSTMEMO_TYPE    = { "Normal", "Important", "Question" };
-        public static GUILayoutOption[] OPTION_WINDOWMENU = new GUILayoutOption[] { GUILayout.Height( 30 ), GUILayout.ExpandWidth( true ) };
+        public static GUILayoutOption[] OPTION_WINDOWMENU = new GUILayoutOption[] { GUILayout.Height( 60 ), GUILayout.ExpandWidth( true ) };
         
         public const string TEXT_TITLE              = "<b><size=30>Unity Editor Memo</size></b>";
         public const string TEXT_CREATEMEMO_TITLE   = "Post Memo To ";
@@ -33,10 +35,13 @@ namespace Charcolle.UnityEditorMemo {
 
         public const string UNDO_POST               = "UnityEditorMemo Post";
         public const string UNDO_DELETEPOST         = "UnityEditorMemo Delete";
+        public const string UNDO_CATEGORYCHANGE     = "UnityEditorMemo Category Change";
         public const string UNDO_EDITPOST           = "UnityEditorMemo Edit Post";
         public const string UNDO_DRAFT              = "UnityEditorMemo Edit Draft";
 
         public static string[] MENU_DISPLAY_MEMO    = { "lastest 100", "older" };
+
+        public static bool isDebug = true;
 
         //======================================================================
         // Process Varies
@@ -57,8 +62,10 @@ namespace Charcolle.UnityEditorMemo {
         private const string SEARCH_MEMO_KEYWORD        = "t:UnityMemoSaveClass";
         private const string SEARCH_DIR_KEYWORD         = "UnityEditorMemoWindow";
 
-        private const string ERROR_SEARCH_NOTFOUND      = "UnityEditorMemoWindow: Memos not found. ";
-        private const string ERROR_SEARCH_ROOTNOTFOUND  = "UnityEditorMemoWindow: Root Directory not Found. Serious error.";
+
+        private const string ERROR_SAVEDATA_INVALID     = "UnityEditorMemoWindow: SaveDatas is broken.";
+        private const string ERROR_SEARCH_NOTFOUND      = "UnityEditorMemoWindow: Memos are not found. ";
+        private const string ERROR_SEARCH_ROOTNOTFOUND  = "UnityEditorMemoWindow: Root Directory not Found.";
         private const string ERROR_CREATE_MEMOSAVE      = "UnityEditorMemoWindow: This category already exist. :";
         private const string ERROR_CATEGORY_EMPTY       = "UnityEditorMemoWindow: Category cannot be empty.";
         private const string ERROR_SERIOUS              = "UnityEditorMemoWindow: Serious error occured. ";
@@ -71,9 +78,9 @@ namespace Charcolle.UnityEditorMemo {
         //======================================================================
         // Public Helper Method ・ Initialize
         //======================================================================
-        public static void HelperInitialize( Rect window ) {
+        public static void Initialize( Rect window ) {
             VerticalState = new UnityEditorMemoSplitterState( new float[] { window.height * 0.9f, window.height * 0.1f },
-                                                              new int[] { 250, 180 }, new int[] { 1500, 300 } );
+                                                              new int[] { 200, 200 }, new int[] { 1500, 300 } );
 
             LoadGUIData();
             LoadUnityEditorMemoSaveDatas();
@@ -81,8 +88,8 @@ namespace Charcolle.UnityEditorMemo {
             LoadUnityEditorMemoFromCategory( selectCategoryId );
         }
 
-        public static void OnGUIFirst( float window_width ) {
-            WINDOW_MAX_SIZE = GUILayout.MaxWidth( window_width );
+        public static void OnGUIFirst( float windowWidth ) {
+            WINDOW_MAX_SIZE = GUILayout.MaxWidth( windowWidth );
             GUI.skin.label.richText = true;
             GUI.skin.box.richText = true;
             //GUI.skin.box.normal.textColor = ( EditorGUIUtility.isProSkin ? Color.white : Color.black );
@@ -90,14 +97,19 @@ namespace Charcolle.UnityEditorMemo {
             LABEL_WORDWRAP_STYLE = new GUIStyle( GUI.skin.label );
             LABEL_WORDWRAP_STYLE.wordWrap = true;
             LABEL_WORDWRAP_STYLE.richText = true;
+
             TEXTAREA_WORDWRAP_STYLE = new GUIStyle( GUI.skin.textArea );
             TEXTAREA_WORDWRAP_STYLE.wordWrap = true;
+
+            NO_SPACE_BOX_STYLE = new GUIStyle( EditorStyles.toolbar );
+            NO_SPACE_BOX_STYLE.margin = new RectOffset( 0, 0, 0, 0 );
+            NO_SPACE_BOX_STYLE.padding = new RectOffset( 0, 0, 0, 0 );
 
             if ( UnityEditorMemoGUISkin != null ) {
                 GUISKIN_BOX_STYLE = UnityEditorMemoGUISkin.box;
                 GUISKIN_BOX_STYLE.normal.textColor = Color.black;
             } else {
-                GUISKIN_BOX_STYLE = GUI.skin.box;
+                GUISKIN_BOX_STYLE = new GUIStyle( GUI.skin.box );
             }
             //GUI.skin = UnityEditorMemoGUISkin;
         }
@@ -113,7 +125,7 @@ namespace Charcolle.UnityEditorMemo {
             LoadUnityEditorMemoSaveDatas();
 
             if ( selectId >= CategoryNameArray.Length ) {
-                //Debug.LogError( ERROR_SERIOUS );
+                if( isDebug ) Debug.LogError( ERROR_SERIOUS );
                 ScriptableSingleton<UnityEditorMemoWindowSave>.instance.selectCategoryId = 0;
                 LoadUnityEditorMemoCategory( CategoryNameArray[0] );
                 return;
@@ -200,7 +212,9 @@ namespace Charcolle.UnityEditorMemo {
         //======================================================================
         // Public Helper Method ・ PostDisplay
         //======================================================================
-
+        /// <summary>
+        /// Devide Posts if memos are over 100
+        /// </summary>
         public static bool isDevideDisplay {
             get {
                 if ( DisplayedMemo == null ) {
@@ -245,10 +259,11 @@ namespace Charcolle.UnityEditorMemo {
         /// </summary>
         static void LoadUnityEditorMemoSaveDatas() {
             SaveMemoList = new List<UnityMemoSaveClass>();
-            var memoNameList = new List<string>();
 
+            //load unityeditormemosaveclass
             var memoGuids = AssetDatabase.FindAssets( SEARCH_MEMO_KEYWORD );
             if ( memoGuids.Length != 0 ) {
+                var fullPathList = new List<string>();
                 for ( int i = 0; i < memoGuids.Length; i++ ) {
                     var path = AssetDatabase.GUIDToAssetPath( memoGuids[i] );
                     var asset = AssetDatabase.LoadAssetAtPath<UnityMemoSaveClass>( path );
@@ -256,9 +271,26 @@ namespace Charcolle.UnityEditorMemo {
                         return;
 
                     SaveMemoList.Add( asset );
-                    memoNameList.Add( asset.CategoryName );
+                    var fullpath =  Application.dataPath + "/" + AssetDatabase.GetAssetPath( SaveMemoList[i] ).Replace( "Assets/", "" );
+                    fullPathList.Add( fullpath );
                 }
-                CategoryNameArray = memoNameList.ToArray();
+                
+                if ( fullPathList != null && fullPathList.Count > 0 ) {
+                    var categoryNameList = new List<string>();
+
+                    //sort by created time
+                    var sortedCategory = fullPathList.OrderBy( path => File.GetCreationTime( path ) )
+                        .Select( path => AssetDatabase.LoadAssetAtPath<UnityMemoSaveClass>( path.Replace( Application.dataPath + "/", "Assets/" ) ) );
+
+                    //construct category name list
+                    foreach ( var asset in sortedCategory )
+                        categoryNameList.Add( asset.CategoryName );
+
+                    CategoryNameArray = categoryNameList.ToArray();
+                } else {
+                    Debug.LogError( ERROR_SAVEDATA_INVALID );
+                    CategoryNameArray = new string[] { "none" };
+                }
 
             } else {
                 Debug.LogWarning( ERROR_SEARCH_NOTFOUND );
@@ -321,7 +353,6 @@ namespace Charcolle.UnityEditorMemo {
             SAD_TEX = AssetDatabase.LoadAssetAtPath<Texture2D>( GUIDirPath + "Texture/UnityEditorMemo_Sad.png" );
             HOME_TEX = AssetDatabase.LoadAssetAtPath<Texture2D>( GUIDirPath + "Texture/UnityEditorMemo_Home.png" );
             ADD_TEX = AssetDatabase.LoadAssetAtPath<Texture2D>( GUIDirPath + "Texture/UnityEditorMemo_Add.png" );
-            EDIT_TEX = AssetDatabase.LoadAssetAtPath<Texture2D>( GUIDirPath + "Texture/UnityEditorMemo_Edit.png" );
 
             POSTMEMO_TEX = new Texture2D[] { null, HAPPY_TEX, ANGRY_TEX, SAD_TEX };
             WINDOW_MENU = new Texture2D[] { HOME_TEX, ADD_TEX };

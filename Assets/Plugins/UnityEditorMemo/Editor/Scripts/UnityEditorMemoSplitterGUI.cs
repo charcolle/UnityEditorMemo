@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 
 //
-// This code from UNIBOOK5 by ando http://www.unity-bu.com/2016/06/unibook-5-info.html
+// from UNIBOOK5 by ando http://www.unity-bu.com/2016/06/unibook-5-info.html
 //
 namespace Charcolle.UnityEditorMemo {
     public class UnityEditorMemoSplitterGUI {

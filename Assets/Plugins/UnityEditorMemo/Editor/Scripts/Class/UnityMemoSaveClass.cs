@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu()]
 public class UnityMemoSaveClass: ScriptableObject {
 
     public string CategoryName;
@@ -14,7 +13,6 @@ public class UnityMemoSaveClass: ScriptableObject {
     public void AddMemo( Charcolle.UnityEditorMemo.UnityMemoClass memo ) {
         UnityMemoList.Add( memo );
     }
-
 }
 
 namespace Charcolle.UnityEditorMemo {
@@ -33,7 +31,6 @@ namespace Charcolle.UnityEditorMemo {
             Type = ( UnityMemoType )type;
             Tex = ( UnityMemoTexture )tex;
         }
-
     }
 
     public enum UnityMemoTexture {

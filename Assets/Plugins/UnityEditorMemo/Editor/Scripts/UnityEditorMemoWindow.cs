@@ -10,7 +10,7 @@ namespace Charcolle.UnityEditorMemo {
 
         private static int SelectMode;
         private static int SelectCategoryId;
-        private static int DisplayMemoId;
+        private static int DisplayMemoId; // use for display category which has more than 100 memos
 
         private static Vector2 MemoScrollView;
 
@@ -23,17 +23,23 @@ namespace Charcolle.UnityEditorMemo {
             masterWin.minSize = Helper.WINDOW_SIZE;
             masterWin.titleContent.text = Helper.WINDOW_TITLE;
             Initialize();
+
+            Undo.undoRedoPerformed -= Initialize;
+            Undo.undoRedoPerformed += Initialize; //umm...?  :(
         }
 
         static void Initialize() {
-            Helper.HelperInitialize( masterWin.position );
+            Helper.Initialize( masterWin.position );
             SelectMode          = ScriptableSingleton<UnityEditorMemoWindowSave>.instance.selectMenu;
             SelectCategoryId    = ScriptableSingleton<UnityEditorMemoWindowSave>.instance.selectCategoryId;
             DisplayMemoId       = ScriptableSingleton<UnityEditorMemoWindowSave>.instance.displayMemoId;
             memoText            = ScriptableSingleton<UnityEditorMemoWindowSave>.instance.postMemoText;
+            if ( masterWin != null )
+                masterWin.Repaint();
+        }
 
-            Undo.undoRedoPerformed -= OpenWindow;
-            Undo.undoRedoPerformed += OpenWindow; //umm...? :(
+        private void OnDestroy() {
+            Undo.undoRedoPerformed -= Initialize;
         }
 
         void OnGUI() {
@@ -41,30 +47,22 @@ namespace Charcolle.UnityEditorMemo {
 
             EditorGUI.BeginChangeCheck();
             Helper.OnGUIFirst( position.width );
-
-            EditorGUILayout.BeginHorizontal( Helper.WINDOW_MAX_SIZE );
+            
+            EditorGUILayout.BeginVertical();
             {
-                GUILayout.Space( 15 );
-                EditorGUILayout.BeginVertical( Helper.WINDOW_MAX_SIZE );
-                {
-                    GUILayout.Space( 15 );
-                    Header();
-                    GUILayout.Space( 10 );
-                    if ( SelectMode == 0 ) {
-                        UnityEditorMemoSplitterGUI.BeginVerticalSplit( Helper.VerticalState );
-                        {
-                            DisplayProjectMemos();
-                            DisplayPostProcess();
-                        }
-                        UnityEditorMemoSplitterGUI.EndVerticalSplit();
-                    } else if ( SelectMode == 1 ) {
-                        CategorySetting();
+                Header();
+                if ( SelectMode == 0 ) {
+                    UnityEditorMemoSplitterGUI.BeginVerticalSplit( Helper.VerticalState );
+                    {
+                        DisplayProjectMemos();
+                        DisplayPostProcess();
                     }
+                    UnityEditorMemoSplitterGUI.EndVerticalSplit();
+                } else if ( SelectMode == 1 ) {
+                    CategorySetting();
                 }
-                EditorGUILayout.EndVertical();
-                GUILayout.Space( 15 );
             }
-            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.EndVertical();
 
             Helper.OnGUIEnd();
 
@@ -78,16 +76,19 @@ namespace Charcolle.UnityEditorMemo {
 
         #region header
         void Header() {
-            // Display Title and Description
-            GUILayout.Space( 5 );
-            GUILayout.Label( Helper.TEXT_TITLE, Helper.WINDOW_MAX_SIZE );
-            GUILayout.Space( 5 );
-            GUILayout.Label( Helper.TEXT_DESC );
-            GUILayout.Space( 5 );
+            //GUILayout.Space( 5 );
+            //GUILayout.Label( Helper.TEXT_TITLE, Helper.WINDOW_MAX_SIZE );
+            //GUILayout.Space( 5 );
+            //GUILayout.Label( Helper.TEXT_DESC );
+            //GUILayout.Space( 5 );
 
             // Display UnityEditorMemo Menu
             if ( Helper.WINDOW_MENU == null ) return;
-            SelectMode = GUILayout.Toolbar( SelectMode, Helper.WINDOW_MENU, Helper.OPTION_WINDOWMENU );
+            EditorGUILayout.BeginHorizontal( Helper.NO_SPACE_BOX_STYLE );
+            {
+                SelectMode = GUILayout.Toolbar( SelectMode, Helper.WINDOW_MENU, EditorStyles.toolbarButton );
+            }
+            EditorGUILayout.EndHorizontal();
             ScriptableSingleton<UnityEditorMemoWindowSave>.instance.selectMenu = SelectMode;
         }
         #endregion
@@ -100,32 +101,37 @@ namespace Charcolle.UnityEditorMemo {
             EditorGUILayout.BeginVertical( new GUILayoutOption[] { GUILayout.ExpandHeight( true ), GUILayout.ExpandWidth( true ) } );
             {
                 // Display Category Menu
-                EditorGUILayout.BeginHorizontal();
-                {
-                    if ( Helper.CategoryNameArray == null || Helper.CategoryNameArray.Length == 0 ) {
-                        GUILayout.Space( 10 );
-                        EditorGUILayout.HelpBox( Helper.TEXT_CATEGORY_NOTFOUND, MessageType.Warning );
-                    } else {
-                        // Avoid error when user deleted category file in project view...:(
-                        if ( SelectCategoryId >= Helper.CategoryNameArray.Length ) {
-                            SelectCategoryId = 0; DisplayMemoId = 0; ScriptableSingleton<UnityEditorMemoWindowSave>.instance.displayMemoId = 0;
-                            Helper.LoadUnityEditorMemoFromCategory( 0 );
-                        }
-                        SelectCategoryId = EditorGUILayout.Popup( "Load Category", SelectCategoryId, Helper.CategoryNameArray, GUILayout.Height( 30 ) );
-                        ScriptableSingleton<UnityEditorMemoWindowSave>.instance.selectCategoryId = SelectCategoryId;
+                if ( Helper.CategoryNameArray == null || Helper.CategoryNameArray.Length == 0 ) {
+                    GUILayout.Space( 10 );
+                    EditorGUILayout.HelpBox( Helper.TEXT_CATEGORY_NOTFOUND, MessageType.Warning );
+                } else {
+                    // Avoid error when user deleted category file in project view...:(
+                    if ( SelectCategoryId >= Helper.CategoryNameArray.Length ) {
+                        SelectCategoryId = 0;
+                        DisplayMemoId = 0;
+                        ScriptableSingleton<UnityEditorMemoWindowSave>.instance.displayMemoId = 0;
+                        Helper.LoadUnityEditorMemoFromCategory( 0 );
+                    }
 
-                        GUI.backgroundColor = Color.green;
-                        if ( GUILayout.Button( "Load", new GUILayoutOption[] { GUILayout.Height( 30 ), GUILayout.Width( 100 ) } ) ) {
-                            Helper.LoadUnityEditorMemoFromCategory( SelectCategoryId );
-                            DisplayMemoId = 0; ScriptableSingleton<UnityEditorMemoWindowSave>.instance.displayMemoId = 0;
-                        }
+                    // Show category popup menu
+                    EditorGUILayout.BeginHorizontal( Helper.NO_SPACE_BOX_STYLE, GUILayout.ExpandWidth( true ) );
+                    {
+                        GUILayout.Label( "Category".ToBold() );
+                        GUI.backgroundColor = Color.yellow;
+                        SelectCategoryId = EditorGUILayout.Popup( SelectCategoryId, Helper.CategoryNameArray, EditorStyles.toolbarPopup );
                         GUI.backgroundColor = Color.white;
                     }
-                }
-                EditorGUILayout.EndHorizontal();
+                    EditorGUILayout.EndHorizontal();
 
-                GUILayout.Space( 10 );
-                
+                    if ( SelectCategoryId != ScriptableSingleton<UnityEditorMemoWindowSave>.instance.selectCategoryId ) {
+                        Helper.LoadUnityEditorMemoFromCategory( SelectCategoryId );
+                        DisplayMemoId = 0;
+                        ScriptableSingleton<UnityEditorMemoWindowSave>.instance.displayMemoId = 0;
+                        Undo.RecordObject( ScriptableSingleton<UnityEditorMemoWindowSave>.instance, Helper.UNDO_CATEGORYCHANGE );
+                    }
+                    ScriptableSingleton<UnityEditorMemoWindowSave>.instance.selectCategoryId = SelectCategoryId;
+                }
+
                 // Display UnityEditorMemo at Category
                 var memoList = Helper.DisplayedMemo.UnityMemoList;
                 if ( memoList == null || memoList.Count == 0 ) {
@@ -141,7 +147,7 @@ namespace Charcolle.UnityEditorMemo {
                         ScriptableSingleton<UnityEditorMemoWindowSave>.instance.displayMemoId = 0;
                     }
 
-                    GUILayout.Box( "", new GUILayoutOption[] { GUILayout.Height( 2 ), GUILayout.ExpandWidth( true ) } );
+                    //GUILayout.Box( "", new GUILayoutOption[] { GUILayout.Height( 2 ), GUILayout.ExpandWidth( true ) } );
 
                     // Draw memo loop
                     EditorGUILayout.BeginHorizontal();
@@ -159,6 +165,9 @@ namespace Charcolle.UnityEditorMemo {
             EditorGUILayout.EndVertical();
         }
 
+        /// <summary>
+        /// control memo view. 
+        /// </summary>
         void drawMemoPreProcess( int displayIdx ) {
             var memoList    = Helper.DisplayedMemo.UnityMemoList;
             var to          = Helper.DisplayMemoTo( displayIdx );
@@ -168,17 +177,23 @@ namespace Charcolle.UnityEditorMemo {
                 drawMemoContent( memoList[i], i + 1 );
         }
 
+        /// <summary>
+        /// drawing a memo
+        /// </summary>
         void drawMemoContent( UnityMemoClass memo, int memoIdx ) {
             EditorGUILayout.BeginVertical( Helper.GUISKIN_BOX_STYLE );
             {
                 // Display Memo Date
                 GUI.backgroundColor = Helper.PostMemoTypeColor( ( int )memo.Type );
+                var preState = memo.isFold;
                 EditorGUILayout.BeginHorizontal();
                 {
                     GUILayout.Label( memoIdx.ToString(), Helper.GUISKIN_BOX_STYLE, GUILayout.Height( 20 ) );
                     GUILayout.Label( memo.Date.ToBold(), Helper.GUISKIN_BOX_STYLE, new GUILayoutOption[] { GUILayout.ExpandWidth( true ), GUILayout.Height( 20 ) } );
                     GUI.backgroundColor = Color.white;
                     memo.isFold = GUILayout.Toggle( memo.isFold, "●", "button", new GUILayoutOption[] { GUILayout.Width( 20 ), GUILayout.Height( 20 ) } );
+                    if ( memo.isFold != preState )
+                        GUIUtility.keyboardControl = 0;
                 }
                 EditorGUILayout.EndHorizontal();
                 GUI.backgroundColor = Color.white;
@@ -244,6 +259,9 @@ namespace Charcolle.UnityEditorMemo {
         static int      postMemoType = 0;
         static int      postMemoTex = 0;
 
+        /// <summary>
+        /// display posting area
+        /// </summary>
         void DisplayPostProcess() {
             if ( Helper.SaveMemoList == null || Helper.DisplayedMemo == null )
                 return;
@@ -253,8 +271,6 @@ namespace Charcolle.UnityEditorMemo {
                 GUILayout.Box( "", new GUILayoutOption[] { GUILayout.Height( 2 ), GUILayout.ExpandWidth( true ) } );
                 GUILayout.Space( 5 );
                 GUILayout.Label( (Helper.TEXT_CREATEMEMO_TITLE + Helper.DisplayedMemo.CategoryName ).ToMiddleBold() );
-                GUILayout.Space( 5 );
-                
                 EditorGUILayout.BeginVertical();
                 {
                     // Display Date
@@ -290,6 +306,9 @@ namespace Charcolle.UnityEditorMemo {
                                 memoText = ""; ScriptableSingleton<UnityEditorMemoWindowSave>.instance.postMemoText = "";
                                 postMemoType = 0; ScriptableSingleton<UnityEditorMemoWindowSave>.instance.postMemoType = 0;
                                 postMemoTex = 0; ScriptableSingleton<UnityEditorMemoWindowSave>.instance.postMemoTex = 0;
+
+                                //Scroll Up
+                                MemoScrollView = Vector2.zero;
                                 GUIUtility.keyboardControl = 0;
                             } else {
                                 Debug.LogWarning( Helper.WARNING_MEMO_EMPTY );
@@ -328,18 +347,18 @@ namespace Charcolle.UnityEditorMemo {
             }
             EditorGUILayout.EndHorizontal();
 
-            GUILayout.Space( 20 );
+            GUILayout.Space( 5 );
 
             if ( Helper.SaveMemoList == null || Helper.SaveMemoList.Count == 0 ) return;
 
             GUILayout.Box( "", new GUILayoutOption[] { GUILayout.Height( 2 ), GUILayout.ExpandWidth( true ) } );
 
-            GUILayout.Space( 10 );
+            GUILayout.Space( 5 );
 
             EditorGUILayout.BeginVertical();
             {
                 GUILayout.Label( Helper.TEXT_CATEGORY_LIST );
-                GUILayout.Space( 10 );
+                GUILayout.Space( 5 );
 
                 GUI.backgroundColor = Color.grey;
                 EditorGUILayout.BeginHorizontal( GUI.skin.box, new GUILayoutOption[] { GUILayout.Height( 20 ), GUILayout.ExpandWidth( true ) } );
@@ -363,7 +382,7 @@ namespace Charcolle.UnityEditorMemo {
             EditorGUILayout.BeginHorizontal( GUI.skin.box, new GUILayoutOption[] { GUILayout.Height( 20 ), GUILayout.ExpandWidth( true ) } );
             {
                 var memolist = unityMemo.UnityMemoList;
-                GUILayout.Label( unityMemo.CategoryName, GUILayout.Width( 100 ) );
+                GUILayout.Label( unityMemo.CategoryName, Helper.LABEL_WORDWRAP_STYLE, GUILayout.Width( 100 ) );
                 GUILayout.Label( memolist.Count.ToString(), GUILayout.Width( 70 ) );
                 GUILayout.Label( memolist.Count == 0 ? "none" : memolist[memolist.Count - 1].Date, GUILayout.ExpandWidth( true ) );
                 GUI.backgroundColor = Color.red;
