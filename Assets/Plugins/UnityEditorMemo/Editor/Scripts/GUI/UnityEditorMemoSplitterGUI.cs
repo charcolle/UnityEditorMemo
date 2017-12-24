@@ -5,7 +5,7 @@ using UnityEngine;
 //
 // from UNIBOOK5 by ando http://www.unity-bu.com/2016/06/unibook-5-info.html
 //
-namespace Charcolle.UnityEditorMemo {
+namespace charcolle.UnityEditorMemo {
     public class UnityEditorMemoSplitterGUI {
 
         static Type splitterGUILayoutType;
