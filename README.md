@@ -5,5 +5,5 @@ Unity 5.6 or newer
 
 ![unityeditormemo_screenshot](https://github.com/charcolle/UnityEditorMemo/blob/master/UnityEditorMemo_Screenshot_v2.0.png?raw=true)
 
-*** Usage
+## Usage
 comming soon...
