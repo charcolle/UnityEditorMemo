@@ -46,6 +46,7 @@ NOTE: You cannot edit nor delete  *default* category .
 ![unityeditormemo_screenshot](https://github.com/charcolle/UnityEditorMemo/blob/master/DescFiles/image/unityeditormemo_3_2.png)
 
 3. You can add any Assets in project to your memo. Drag drop the asset to the memo. You can easily access the asset.
+
 NOTE : Basically you cannot add the GameObject in scene. If the GameObject has SceneMemo, you can add the GameObject to your memo.
 
 ![unityeditormemo_screenshot](https://github.com/charcolle/UnityEditorMemo/blob/master/DescFiles/gif/unityeditormemo_object.gif)
