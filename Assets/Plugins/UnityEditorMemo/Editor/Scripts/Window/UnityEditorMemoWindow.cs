@@ -10,15 +10,13 @@ namespace charcolle.UnityEditorMemo {
 
     public class UnityEditorMemoWindow: EditorWindow {
 
-        //======================================================================
-        // Varies
-        //======================================================================
         public static UnityEditorMemoWindow win;
 
         //======================================================================
         // Window Process
         //======================================================================
-        [MenuItem( "Window/Unity Editor Memo" )]
+
+        [MenuItem( "Window/UnityEditorMemo" )]
         private static void OpenWindow() {
             win                   = GetWindow<UnityEditorMemoWindow>();
             win.minSize           = WindowHelper.WINDOW_SIZE;
@@ -106,6 +104,7 @@ namespace charcolle.UnityEditorMemo {
             }
             EditorGUILayout.EndHorizontal();
             if ( mode != selectMode ) {
+                categoryEdit = false;
                 GUIUtility.keyboardControl = 0;
             }
             selectMode = mode;
@@ -168,10 +167,6 @@ namespace charcolle.UnityEditorMemo {
                 Footer();
             }
             EditorGUILayout.EndVertical();
-        }
-
-        void drawMemoProcess( int displayIdx ) {
-
         }
 
         private bool[] footerToggle = { true, false, false, false, false, false };
@@ -398,7 +393,6 @@ namespace charcolle.UnityEditorMemo {
         //======================================================================
 
         #region event process
-
         void EventProcess( Event e ) {
             if ( WindowHelper.Data == null || WindowHelper.CurCategory( selectCategoryId ) == null )
                 return;

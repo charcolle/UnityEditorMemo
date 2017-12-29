@@ -10,11 +10,11 @@
 	Charcolle : charcolle.1234@gmail.com
 
 Åú Description
-	- You can use this asset from MenuBar, [Window > UnityEdiorMemo].
+	- You can use this asset from MenuBar, [Window] -> [UnityEdiorMemo].
 	  When opening the window, then post any texts on it.
-	  You can add a category of memo. Press plus button, and input the category name, then press Register button.
-	  You can add a Object in project to your memo. Also, you can add a Object in scene, which has UnitySceneMemo, to your memo.
-	- You can add memo to your gameObjects from Hierarchy view. Select the gameObject and press Add button.
+	  You can add a category of memo. Press plus button, and input the category name, then press [Register] button.
+	  You can add a Object in project to your memo. Also, you can add a Object in the scene, which has UnitySceneMemo, to your memo.
+	- You can add memo to your gameObjects from Hierarchy view. Select the gameObject and press [+] button.
 	  You can disable this system from Preference.
 
 Åú Lisence
@@ -36,12 +36,13 @@
 	2.0 : CHANGE - save data system. So this version is NOT compatible with previous version.
 		: CHANGE - Remove remove button from memo menu. You can delete memo from right click menu instead.
 		: CHANGE - Add label type. Also, you can custom your own label.
+		: UPDATE - You can change the name of category.
 		: UPDATE - UnityEditorMemo's EditorPreference.
-		: UPDATE - You can add a Object in project to your memo. Also, you can add a Object, which has UnitySceneMemo, to your memo.
+		: UPDATE - You can add a Object in project to your memo. Also, you can add a Object in the scene, which has UnitySceneMemo, to your memo.
 		: UPDATE - You can add memo to gameObjects from hierarchy.
 
 Åú Future
 	2.1 : This asset is not for team development.
 		  I have a plan to make this asset suitable for team:)
 	2.1 : Memo backup.
-	2.1 : BUGFIX
+	2.1 : Customize label color.

@@ -9,7 +9,7 @@ namespace charcolle.UnityEditorMemo {
         // Preference
         //======================================================================
 
-        private static string[] SCENEMEMO_POSITION = new string[] { "TopLeft", "BottomLeft", "BottomRight" };
+        private static readonly string[] SCENEMEMO_POSITION = new string[] { "TopLeft", "BottomLeft", "BottomRight" };
 
         [PreferenceItem( "UnityEditorMemo" )]
         public static void PreferenceView() {

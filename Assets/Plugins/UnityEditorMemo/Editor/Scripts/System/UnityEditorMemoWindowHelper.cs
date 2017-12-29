@@ -1,6 +1,6 @@
-﻿using UnityEngine;
-using System.Linq;
+﻿using System.Linq;
 using System.Collections.Generic;
+using UnityEngine;
 
 using FileUtility = charcolle.UnityEditorMemo.FileUtility;
 
