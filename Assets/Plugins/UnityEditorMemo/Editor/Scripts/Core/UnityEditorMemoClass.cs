@@ -13,17 +13,19 @@ namespace charcolle.UnityEditorMemo {
 
         public string Date;
         public string Memo;
+        public string URL;
         public UnityEditorMemoLabel Label;
         public UnityEditorMemoTexture Tex;
         public UnityEditorMemoObject ObjectRef;
-        public bool isFold;
+        public bool isFoldout;
 
-        public UnityEditorMemo( string memo, int type, int tex ) {
+        public UnityEditorMemo( string memo, int type, int tex, string url ) {
             Date        = DateTime.Now.RenderDate();
             Memo        = memo;
             Label       = ( UnityEditorMemoLabel )type;
             Tex         = ( UnityEditorMemoTexture )tex;
             ObjectRef   = new UnityEditorMemoObject();
+            URL         = url;
         }
 
         [NonSerialized]
@@ -34,17 +36,24 @@ namespace charcolle.UnityEditorMemo {
             {
                 // header
                 GUI.backgroundColor = GUIHelper.Colors.LabelColor( Label );
-                var preState = isFold;
+                var preState = isFoldout;
                 EditorGUILayout.BeginHorizontal( GUIHelper.Styles.MemoHeader );
                 {
-                    GUILayout.Space( 5f );
-                    GUILayout.Label( Date.ToBold(), new GUILayoutOption[] { GUILayout.ExpandWidth( true ), GUILayout.Height( 18 ) } );
-                    GUILayout.FlexibleSpace();
-                    var fold = GUILayout.Toggle( isFold, "≡", EditorStyles.toolbarButton, new GUILayoutOption[] { GUILayout.Width( 20 ) } );
-                    if ( fold != preState ) {
+                    var fold = GUILayout.Toggle( isFoldout, "≡", EditorStyles.toolbarButton, new GUILayoutOption[] { GUILayout.Width( 20 ) } );
+                    if( fold != preState ) {
                         UndoHelper.EditorMemoUndo( UndoHelper.UNDO_MEMO_EDIT );
                         GUIUtility.keyboardControl = 0;
-                        isFold = fold;
+                        isFoldout = fold;
+                    }
+
+                    GUILayout.Label( Date.ToBold(), new GUILayoutOption[] { GUILayout.ExpandWidth( true ), GUILayout.Height( 18 ) } );
+
+                    GUILayout.FlexibleSpace();
+
+                    if( !string.IsNullOrEmpty( URL ) ) {
+                        if( GUILayout.Button( new GUIContent( "open", GUIHelper.Textures.OpenLink ), EditorStyles.toolbarButton, new GUILayoutOption[] { GUILayout.Width( 60 ) } ) ) {
+                            Application.OpenURL( URL );
+                        }
                     }
                 }
                 EditorGUILayout.EndHorizontal();
@@ -58,32 +67,38 @@ namespace charcolle.UnityEditorMemo {
                     EditorGUILayout.BeginHorizontal();
                     {
                         GUILayout.Space( 5 );
+
                         EditorGUILayout.BeginVertical( GUILayout.Width( 32 ) );
                         GUILayout.Box( GUIHelper.Textures.Emotions[( int )Tex], GUIStyle.none, new GUILayoutOption[] { GUILayout.Width( 32 ), GUILayout.Height( 32 ) } );
                         EditorGUILayout.EndVertical();
 
-                        // Display Or Edit Memo
-                        if ( isFold ) {
+                        // display or edit memo
+                        if ( isFoldout ) {
                             Undo.IncrementCurrentGroup();
                             UndoHelper.EditorMemoUndo( UndoHelper.UNDO_MEMO_EDIT );
                             Memo = EditorGUILayout.TextArea( Memo, GUIHelper.Styles.TextAreaWordWrap );
                         } else {
+                            GUIHelper.Styles.LabelWordWrap.fontSize = UnityEditorMemoPrefs.UnityEditorMemoFontSize;
                             GUILayout.Label( Memo, GUIHelper.Styles.LabelWordWrap );
                         }
                     }
                     EditorGUILayout.EndHorizontal();
 
-                    ObjectRef.Draw( isFold );
+                    ObjectRef.Draw( isFoldout );
 
-                    GUILayout.Space( 5f );
+                    GUILayout.Space( 5 );
 
-                    // Display Memo Edit Buttons
-                    if ( isFold ) {
+                    // edit memo menu
+                    if ( isFoldout ) {
                         EditorGUILayout.BeginHorizontal();
                         {
-                            GUILayout.FlexibleSpace();
-                            Tex = ( UnityEditorMemoTexture )GUILayout.Toolbar( ( int )Tex, GUIHelper.Textures.Emotions, new GUILayoutOption[] { GUILayout.Height( 25 ), GUILayout.Width( 120 ) } );
-                            Label = ( UnityEditorMemoLabel )EditorGUILayout.Popup( ( int )Label, GUIHelper.Label, GUILayout.Width( 100 ) );
+                            GUILayout.Space( 37 );
+
+                            GUILayout.Label( "URL", GUILayout.Width( 30 ) );
+                            URL = EditorGUILayout.TextField( URL, GUIHelper.Styles.TextFieldWordWrap );
+
+                            Tex = ( UnityEditorMemoTexture )GUILayout.Toolbar( ( int )Tex, GUIHelper.Textures.Emotions, new GUILayoutOption[] { GUILayout.Height( 23 ), GUILayout.Width( 110 ) } );
+                            Label = ( UnityEditorMemoLabel )EditorGUILayout.Popup( ( int )Label, GUIHelper.LabelMenu, GUIHelper.Styles.LargeDropdown, GUILayout.Width( 90 ) );
                         }
                         EditorGUILayout.EndHorizontal();
                         GUILayout.Space( 5 );

@@ -15,18 +15,24 @@ namespace charcolle.UnityEditorMemo {
         public string Memo;
         public UnityEditorMemoLabel Label;
         public UnityEditorMemoTexture Tex;
+        public UnitySceneMemoTextColor TextCol;
         public bool ShowAtScene = false;
 
         public int LocalIdentifierInFile;
         public string SceneGuid;
         public string Name;
 
+        public float SceneMemoWidth  = 270f;
+        public float SceneMemoHeight = 150f;
+
         [NonSerialized]
         public int InstanceId;
         [NonSerialized]
-        public bool isEdit;
+        public bool IsEdit;
         [NonSerialized]
-        public bool checkExist;
+        public bool InVisible;
+        [NonSerialized]
+        public bool CheckExist;
 
         private Texture2D[] Components;
 
@@ -71,23 +77,27 @@ namespace charcolle.UnityEditorMemo {
             {
                 // header
                 GUI.backgroundColor = GUIHelper.Colors.LabelColor( Label );
-                EditorGUILayout.BeginHorizontal( GUIHelper.Styles.MemoHeader, new GUILayoutOption[] { GUILayout.ExpandWidth( true ) } );
+                EditorGUILayout.BeginHorizontal( EditorStyles.toolbar );
                 {
-                    DrawTexture();
-                    GUILayout.Label( Name, GUIHelper.Styles.LabelWordWrap );
-                    GUILayout.FlexibleSpace();
-                    var edit = GUILayout.Toggle( isEdit, "≡", EditorStyles.toolbarButton, new GUILayoutOption[] { GUILayout.Width( 18 ) } );
-                    if( edit != isEdit ) {
+                    var edit = GUILayout.Toggle( IsEdit, "≡", EditorStyles.toolbarButton, new GUILayoutOption[] { GUILayout.Width( 18 ) } );
+                    if( edit != IsEdit ) {
                         GUIUtility.keyboardControl = 0;
                     }
-                    isEdit = edit;
+                    IsEdit = edit;
+                    EditorGUILayout.BeginHorizontal();
+                    {
+                        DrawTexture();
+                        GUILayout.Label( Name );
+                    }
+                    EditorGUILayout.EndHorizontal();
+                    GUILayout.FlexibleSpace();
                 }
                 EditorGUILayout.EndHorizontal();
                 GUI.backgroundColor = Color.white;
 
                 // memo
                 scrollView = EditorGUILayout.BeginScrollView( scrollView );
-                if ( isEdit ) {
+                if ( IsEdit ) {
                     Undo.IncrementCurrentGroup();
                     UndoHelper.SceneMemoUndo( UndoHelper.UNDO_SCENEMEMO_EDIT );
                     Memo = EditorGUILayout.TextArea( Memo, GUIHelper.Styles.TextAreaWordWrap, new GUILayoutOption[] { GUILayout.ExpandWidth( true ), GUILayout.ExpandHeight( true ) } );
@@ -97,15 +107,39 @@ namespace charcolle.UnityEditorMemo {
                 EditorGUILayout.EndScrollView();
 
                 // footer
-                if( isEdit ) {
-                    GUILayout.Space( 5 );
-                    EditorGUILayout.BeginHorizontal();
+                if( IsEdit ) {
+                    EditorGUILayout.BeginHorizontal( EditorStyles.toolbar );
                     {
                         GUILayout.FlexibleSpace();
-                        ShowAtScene = GUILayout.Toggle( ShowAtScene, "ShowAtScene", GUI.skin.button, GUILayout.Width( 100f ) );
-                        Label       = ( UnityEditorMemoLabel )EditorGUILayout.Popup( ( int )Label, GUIHelper.Label, GUILayout.Width( 70 ) );
+                        ShowAtScene = GUILayout.Toggle( ShowAtScene, "ShowAtScene", EditorStyles.toolbarButton, new GUILayoutOption[] { GUILayout.Width( 80 ) } );
+                        GUI.backgroundColor = GUIHelper.Colors.LabelColor( Label );
+                        Label       = ( UnityEditorMemoLabel )EditorGUILayout.Popup( ( int )Label, GUIHelper.LabelMenu, EditorStyles.toolbarDropDown, GUILayout.Width( 70 ) );
+                        GUI.backgroundColor = Color.white;
                     }
                     EditorGUILayout.EndHorizontal();
+                    if( ShowAtScene ) {
+                        GUILayout.Space( 3 );
+
+                        EditorGUILayout.BeginHorizontal();
+                        {
+                            GUILayout.Label( "Width" );
+                            SceneMemoWidth = EditorGUILayout.Slider( SceneMemoWidth, 200, 500 );
+                        }
+                        EditorGUILayout.EndVertical();
+                        EditorGUILayout.BeginHorizontal();
+                        {
+                            GUILayout.Label( "Height" );
+                            SceneMemoHeight = EditorGUILayout.Slider( SceneMemoHeight, 100, 500 );
+                        }
+                        EditorGUILayout.EndVertical();
+                        EditorGUILayout.BeginHorizontal();
+                        {
+                            GUILayout.Label( "TextColor" );
+                            TextCol = ( UnitySceneMemoTextColor )EditorGUILayout.Popup( ( int )TextCol, GUIHelper.TextColorMenu, GUILayout.Width( 60 ) );
+                            GUILayout.FlexibleSpace();
+                        }
+                        EditorGUILayout.EndVertical();
+                    }
                     GUILayout.Space( 5 );
                 }
             }
@@ -119,28 +153,36 @@ namespace charcolle.UnityEditorMemo {
             {
                 // header
                 GUI.backgroundColor = GUIHelper.Colors.SceneMemoLabelColor( Label );
-                EditorGUILayout.BeginHorizontal( GUIHelper.Styles.MemoHeader, new GUILayoutOption[] { GUILayout.ExpandWidth( true ) } );
+                EditorGUILayout.BeginHorizontal( GUIHelper.Styles.MemoHeader );
                 {
-                    DrawTexture();
-                    GUILayout.Label( Name, GUIHelper.Styles.LabelWordWrap );
-                    GUILayout.FlexibleSpace();
-                    if( GUILayout.Button( "x", EditorStyles.toolbarButton, new GUILayoutOption[] { GUILayout.Width( 18 ) } ) ) {
+                    if( GUILayout.Button( InVisible ? "●" : "x", EditorStyles.toolbarButton, new GUILayoutOption[] { GUILayout.Width( 18 ) } ) ) {
                         Undo.IncrementCurrentGroup();
                         UndoHelper.SceneMemoUndo( UndoHelper.UNDO_SCENEMEMO_EDIT );
-                        ShowAtScene = false;
+                        InVisible = !InVisible;
                     }
+                    EditorGUILayout.BeginHorizontal();
+                    {
+                        DrawTexture();
+                        GUILayout.Label( Name );
+                    }
+                    EditorGUILayout.EndHorizontal();
+                    GUILayout.FlexibleSpace();
                 }
                 EditorGUILayout.EndHorizontal();
                 GUI.backgroundColor = Color.white;
 
-                // memo
-                GUI.backgroundColor = GUIHelper.Colors.TransparentColor;
-                scrollView = EditorGUILayout.BeginScrollView( scrollView, GUIHelper.Styles.NoSpaceBox );
-                {
-                    GUILayout.Label( Memo, GUIHelper.Styles.LabelWordWrap );
+                if( !InVisible ) {
+                    // memo
+                    GUI.backgroundColor = GUIHelper.Colors.TransparentColor;
+                    scrollView = EditorGUILayout.BeginScrollView( scrollView, GUIHelper.Styles.NoSpaceBox );
+                    {
+                        GUIHelper.Styles.LabelWordWrap.normal.textColor = GUIHelper.Colors.SceneMemoTextColor( TextCol );
+                        GUILayout.Label( Memo, GUIHelper.Styles.LabelWordWrap );
+                        GUIHelper.Styles.LabelWordWrap.normal.textColor = GUIHelper.Colors.DefaultTextColor;
+                    }
+                    EditorGUILayout.EndScrollView();
+                    GUI.backgroundColor = Color.white;
                 }
-                EditorGUILayout.EndScrollView();
-                GUI.backgroundColor = Color.white;
             }
             EditorGUILayout.EndVertical();
         }
@@ -149,7 +191,7 @@ namespace charcolle.UnityEditorMemo {
             if ( Components != null ) {
                 GUILayout.Space( 3 );
                 for ( int i = 0; i < Components.Length; i++ )
-                    GUILayout.Box( Components[i], GUIStyle.none, new GUILayoutOption[] { GUILayout.Width( 16 ), GUILayout.Height( 16 ) } );
+                    GUILayout.Box( Components[i], GUIStyle.none, new GUILayoutOption[] { GUILayout.MaxWidth( 16 ), GUILayout.MaxHeight( 16 ) } );
             }
         }
 

@@ -5,6 +5,7 @@ using UnityEditor;
 using UndoHelper   = charcolle.UnityEditorMemo.UndoHelper;
 using GUIHelper    = charcolle.UnityEditorMemo.GUIHelper;
 using WindowHelper = charcolle.UnityEditorMemo.UnityEditorMemoWindowHelper;
+using SlackHelper  = charcolle.UnityEditorMemo.SlackHelper;
 
 namespace charcolle.UnityEditorMemo {
 
@@ -72,6 +73,8 @@ namespace charcolle.UnityEditorMemo {
         private int selectMode;
         [SerializeField]
         private int selectLabel;
+        [SerializeField]
+        private string searchText;
         private Vector2 memoScrollView;
         void DrawContents() {
             if ( WindowHelper.Data == null || WindowHelper.CurCategory( selectCategoryId ) == null ) {
@@ -93,6 +96,7 @@ namespace charcolle.UnityEditorMemo {
                 CategoryContents();
                 LabelConfigContents();
             }
+
         }
 
         #region header
@@ -114,9 +118,14 @@ namespace charcolle.UnityEditorMemo {
         #region memo contents
         void CategoryMenu() {
             var selectedId = 0;
-            EditorGUILayout.BeginHorizontal( GUIHelper.Styles.NoSpaceBox, GUILayout.ExpandWidth( true ) );
+            EditorGUILayout.BeginHorizontal( EditorStyles.toolbar, GUILayout.ExpandWidth( true ) );
             {
-                GUILayout.Label( "Category".ToBold() );
+                //searchText = GUILayout.TextField( searchText, GUIHelper.Styles.SearchField, GUILayout.Width( 200 ) );
+                //if( GUILayout.Button( "", GUIHelper.Styles.SearchFieldCancel ) ) {
+                //    searchText = "";
+                //    GUIUtility.keyboardControl = 0;
+                //}
+                GUILayout.Space( position.width * 0.48f );
                 GUI.backgroundColor = Color.yellow;
                 selectedId          = EditorGUILayout.Popup( selectCategoryId, WindowHelper.Data.CategoryList, EditorStyles.toolbarPopup );
                 GUI.backgroundColor = Color.white;
@@ -129,7 +138,7 @@ namespace charcolle.UnityEditorMemo {
                 GUIUtility.keyboardControl = 0;
                 selectLabel                = 0;
                 footerToggle               = new bool[]{ true, false, false, false, false, false };
-                WindowHelper.CurCategory( selectCategoryId ).OnCategoryChange();
+                WindowHelper.CurCategory( selectedId ).OnCategoryChange();
             }
             selectCategoryId = selectedId;
         }
@@ -157,8 +166,9 @@ namespace charcolle.UnityEditorMemo {
                     //try { // this cause erro!:(
                     memoScrollView = EditorGUILayout.BeginScrollView( memoScrollView );
                     {
-                        for ( int i = 0; i < memos.Count; i++ )
-                            memos[i].OnGUI();
+                        for ( int i = 0; i < memos.Count; i++ ) {
+                                memos[ i ].OnGUI();
+                        }
                     }
                     EditorGUILayout.EndScrollView();
                     //} catch { }
@@ -205,9 +215,12 @@ namespace charcolle.UnityEditorMemo {
 
         #region post contents
         [SerializeField]
-        private string memoText     = "";
-        private int postMemoLabel   = 0;
-        private int postMemoTex     = 0;
+        private string memoText        = "";
+        private int postMemoLabel      = 0;
+        private int postMemoTex        = 0;
+        private string postMemoUrl     = "";
+        private bool postToSlack       = false;
+        private Vector2 postScrollView = Vector2.zero;
         /// <summary>
         /// display posting area
         /// </summary>
@@ -216,15 +229,38 @@ namespace charcolle.UnityEditorMemo {
             EditorGUILayout.BeginVertical( new GUILayoutOption[] { GUILayout.ExpandHeight( true ), GUILayout.ExpandWidth( true ) } );
             {
                 GUILayout.Box( "", GUIHelper.Styles.NoSpaceBox, new GUILayoutOption[] { GUILayout.Height( 2 ), GUILayout.ExpandWidth( true ) } );
+
+                EditorGUILayout.BeginHorizontal( EditorStyles.toolbar );
+                {
+                    GUILayout.Label( DateTime.Now.RenderDate() );
+                    GUI.backgroundColor = GUIHelper.Colors.LabelColor( postMemoLabel );
+                    postMemoLabel = EditorGUILayout.Popup( postMemoLabel, GUIHelper.LabelMenu, EditorStyles.toolbarPopup, GUILayout.Width( 100 ) );
+                    GUI.backgroundColor = Color.white;
+
+                    GUILayout.FlexibleSpace();
+
+                    GUILayout.Label( "URL", GUILayout.Width( 30 ) );
+                    postMemoUrl = EditorGUILayout.TextField( postMemoUrl, EditorStyles.toolbarTextField );
+                }
+                EditorGUILayout.EndHorizontal();
+
+                if( UnityEditorMemoPrefs.UnityEditorMemoUseSlack ) {
+                    EditorGUILayout.BeginHorizontal( EditorStyles.toolbar );
+                    {
+                        UnityEditorMemoPrefs.UnityEditorMemoSlackChannel = EditorGUILayout.TextField( UnityEditorMemoPrefs.UnityEditorMemoSlackChannel );
+                        postToSlack = GUILayout.Toggle( postToSlack, "Post to Slack", EditorStyles.toolbarButton, GUILayout.Width( 100 ) );
+                    }
+                    EditorGUILayout.EndHorizontal();
+                }
+
                 GUILayout.Space( 5 );
-                GUILayout.Label( ( WindowHelper.TEXT_CREATEMEMO_TITLE + category.Name ).ToMiddleBold() );
+
                 EditorGUILayout.BeginVertical();
                 {
-                    // date
                     EditorGUILayout.BeginHorizontal();
                     {
-                        GUILayout.Label( DateTime.Now.RenderDate(), GUIHelper.Styles.MemoBox, new GUILayoutOption[] { GUILayout.Width( 150 ), GUILayout.Height( 25 ) } );
-                        postMemoLabel = EditorGUILayout.Popup( postMemoLabel, GUIHelper.Label, GUILayout.Width( 100 ) );
+                        GUILayout.Label( ( WindowHelper.TEXT_CREATEMEMO_TITLE + category.Name ).ToMiddleBold() );
+                        GUILayout.FlexibleSpace();
                     }
                     EditorGUILayout.EndHorizontal();
 
@@ -233,11 +269,19 @@ namespace charcolle.UnityEditorMemo {
                     // draft
                     Undo.IncrementCurrentGroup();
                     UndoHelper.WindowUndo( UndoHelper.UNDO_DRAFT );
-                    memoText = EditorGUILayout.TextArea( memoText, GUIHelper.Styles.TextAreaWordWrap, new GUILayoutOption[] { GUILayout.MaxHeight( 300 ) } );
+
+                    postScrollView = EditorGUILayout.BeginScrollView( postScrollView );
+                    {
+                        memoText = EditorGUILayout.TextArea( memoText, GUIHelper.Styles.TextAreaWordWrap, new GUILayoutOption[] { GUILayout.MaxHeight( 300 ) } );
+                    }
+                    EditorGUILayout.EndScrollView();
+
                     EditorGUILayout.BeginHorizontal();
                     {
-                        postMemoTex = GUILayout.Toolbar( postMemoTex, GUIHelper.Textures.Emotions, new GUILayoutOption[] { GUILayout.Height( 30 ), GUILayout.Width( 150 ) } );
+
                         GUILayout.FlexibleSpace();
+
+                        postMemoTex = GUILayout.Toolbar( postMemoTex, GUIHelper.Textures.Emotions, new GUILayoutOption[] { GUILayout.Height( 30 ), GUILayout.MaxWidth( 150 ) } );
 
                         //if ( GUILayout.Button( "test", new GUILayoutOption[] { GUILayout.Height( 30 ), GUILayout.Width( 50 ) } ) ) {
                         //    for( int i = 0; i < 110; i++ ) {
@@ -246,18 +290,19 @@ namespace charcolle.UnityEditorMemo {
                         //}
 
                         // post button
-                            GUI.backgroundColor = Color.cyan;
-                        if ( GUILayout.Button( "Post", new GUILayoutOption[] { GUILayout.Height( 30 ), GUILayout.Width( 100 ) } ) ) {
+                        GUI.backgroundColor = Color.cyan;
+                        if ( GUILayout.Button( "Post", new GUILayoutOption[] { GUILayout.Height( 30 ), GUILayout.MaxWidth( 120 ) } ) ) {
+                            Undo.IncrementCurrentGroup();
+                            UndoHelper.WindowUndo( UndoHelper.UNDO_POST );
+                            UndoHelper.EditorMemoUndo( UndoHelper.UNDO_POST );
                             if ( !string.IsNullOrEmpty( memoText ) ) {
-                                Undo.IncrementCurrentGroup();
-                                UndoHelper.EditorMemoUndo( UndoHelper.UNDO_POST );
-
-                                category.AddMemo( new UnityEditorMemo( memoText, postMemoLabel, postMemoTex ) );
-                                memoText = "";
-                                postMemoLabel = 0;
-                                postMemoTex = 0;
-                                memoScrollView = Vector2.zero;
-                                GUIUtility.keyboardControl = 0;
+                                var memo = new UnityEditorMemo( memoText, postMemoLabel, postMemoTex, postMemoUrl );
+                                if( UnityEditorMemoPrefs.UnityEditorMemoUseSlack && postToSlack ) {
+                                    if ( SlackHelper.Post( memo, category.Name ) )
+                                        memoPostProcess( category, memo );
+                                } else {
+                                    memoPostProcess( category, memo );
+                                }
                             } else {
                                 Debug.LogWarning( WindowHelper.WARNING_MEMO_EMPTY );
                             }
@@ -272,6 +317,19 @@ namespace charcolle.UnityEditorMemo {
             }
             EditorGUILayout.EndVertical();
         }
+
+        private void memoPostProcess( UnityEditorMemoCategory category, UnityEditorMemo memo ) {
+
+            category.AddMemo( memo );
+            memoText = "";
+            postMemoTex = 0;
+            postMemoUrl = "";
+            memoScrollView = Vector2.zero;
+            if( selectLabel == 0 )
+                postMemoLabel = 0;
+            GUIUtility.keyboardControl = 0;
+        }
+
         #endregion
 
         #region category contents
@@ -403,7 +461,7 @@ namespace charcolle.UnityEditorMemo {
                 if ( memo.IsContextClick ) {
                     var menu = new GenericMenu();
                     menu.AddItem( new GUIContent( "Edit" ), false, () => {
-                        memo.isFold = true;
+                        memo.isFoldout = true;
                     } );
                     menu.AddItem( new GUIContent( "Delete" ), false, () => {
                         UndoHelper.EditorMemoUndo( UndoHelper.UNDO_DELETE_MEMO );

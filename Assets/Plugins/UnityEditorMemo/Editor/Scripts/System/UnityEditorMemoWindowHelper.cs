@@ -17,7 +17,7 @@ namespace charcolle.UnityEditorMemo {
         public static UnityEditorMemoSplitterState VerticalState;
 
         public static readonly Vector2  WINDOW_SIZE          = new Vector2( 350f, 400f );
-        public const string WINDOW_TITLE                     = "UnityEditorMemo";
+        public const string WINDOW_TITLE                     = "UnityMemo";
 
         public const string TEXT_NO_MEMO                     = "Memo is not yet.";
         public const string TEXT_CREATEMEMO_TITLE            = "Post Memo To ";

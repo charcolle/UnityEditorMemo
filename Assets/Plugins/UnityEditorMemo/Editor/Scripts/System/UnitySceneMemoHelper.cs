@@ -98,7 +98,7 @@ namespace charcolle.UnityEditorMemo {
             foreach ( GameObject obj in scene.GetRootGameObjects() )
                 getObjectRecursive( obj );
 
-            sceneMemo.Memo.RemoveAll( m => !m.checkExist );
+            sceneMemo.Memo.RemoveAll( m => !m.CheckExist );
 
             if ( sceneMemo.Memo.Count == 0 )
                 Data.Scene.Remove( sceneMemo );
@@ -116,7 +116,7 @@ namespace charcolle.UnityEditorMemo {
         private static void checkMemoExist( GameObject obj ) {
             var memo = GetMemo( obj.gameObject );
             if ( memo != null )
-                memo.checkExist = true;
+                memo.CheckExist = true;
         }
 
         //======================================================================

@@ -21,9 +21,15 @@ namespace charcolle.UnityEditorMemo {
         MAGENTA = 5,
     }
 
+    public enum UnitySceneMemoTextColor {
+        BLACK = 0,
+        WHITE = 1,
+    }
+
     internal static class GUIHelper {
 
-        public static string[] Label    = { "Normal", "Red", "Green", "Cyan", "Yellow", "Magenta" };
+        public static string[] LabelMenu     = { "Normal", "Red", "Green", "Cyan", "Yellow", "Magenta" };
+        public static string[] TextColorMenu = { "Black", "White" };
 
         //======================================================================
         // GUIStyle
@@ -52,8 +58,14 @@ namespace charcolle.UnityEditorMemo {
                 LabelWordWrap.wordWrap    = true;
                 LabelWordWrap.richText    = true;
 
+                LargeDropdown             = new GUIStyle( "LargeDropDown" );
+                LargeDropdown.richText    = true;
+
                 TextAreaWordWrap          = new GUIStyle( GUI.skin.textArea );
                 TextAreaWordWrap.wordWrap = true;
+
+                TextFieldWordWrap = new GUIStyle( GUI.skin.textField );
+                TextFieldWordWrap.wordWrap = true;
 
                 GUIStyleState state       = new GUIStyleState();
                 state                     = GUI.skin.box.normal;
@@ -87,6 +99,10 @@ namespace charcolle.UnityEditorMemo {
                 get;
                 private set;
             }
+            public static GUIStyle TextFieldWordWrap {
+                get;
+                private set;
+            }
 
             public static GUIStyle MemoBox {
                 get;
@@ -98,6 +114,10 @@ namespace charcolle.UnityEditorMemo {
                 private set;
             }
 
+            public static GUIStyle LargeDropdown {
+                get;
+                private set;
+            }
 
         }
 
@@ -120,6 +140,7 @@ namespace charcolle.UnityEditorMemo {
                 Home     = AssetDatabase.LoadAssetAtPath<Texture2D>( guiDir + "Texture/unityeditormemo_home.png" );
                 Plus     = AssetDatabase.LoadAssetAtPath<Texture2D>( guiDir + "Texture/unityeditormemo_add.png" );
                 Balloon  = AssetDatabase.LoadAssetAtPath<Texture2D>( guiDir + "Texture/unityeditormemo_balloon.png" );
+                OpenLink = EditorGUIUtility.FindTexture( "winbtn_win_rest" );
                 Emotions = new Texture2D[] { null, Happy, Angry, Sad };
                 Menu     = new Texture2D[] { Home, Plus };
 
@@ -156,25 +177,36 @@ namespace charcolle.UnityEditorMemo {
                 private set;
             }
 
+            public static Texture2D OpenLink {
+                get;
+                private set;
+            }
+
         }
 
         public static class Colors {
 
-            public static Color TransparentColor;
-
             static Colors() {
-                TransparentColor = EditorGUIUtility.isProSkin ? Color.white : new Color( 0.6f, 0.6f, 0.6f, 0.5f );
+                TransparentColor  = EditorGUIUtility.isProSkin ? Color.white : new Color( 0.6f, 0.6f, 0.6f, 0.5f );
+                DefaultWhiteColor = new Color( 0.76f, 0.76f, 0.76f, 1f );
+                DefaultBlackColor = Color.black;
+                DefaultTextColor  = GUI.skin.label.normal.textColor;
             }
 
             public static Color LabelColor( int type ) {
                 return getColor( type );
             }
+
             public static Color LabelColor( UnityEditorMemoLabel label ) {
                 return getColor( ( int )label );
             }
 
             public static Color SceneMemoLabelColor( UnityEditorMemoLabel label ) {
                 return getColor( ( int )label ) - new Color( 0f, 0f, 0f, 0.5f );
+            }
+
+            public static Color SceneMemoTextColor( UnitySceneMemoTextColor color ) {
+                return color.Equals( UnitySceneMemoTextColor.BLACK ) ? DefaultBlackColor : DefaultWhiteColor;
             }
 
             private static Color getColor( int type ) {
@@ -201,6 +233,26 @@ namespace charcolle.UnityEditorMemo {
                         return Color.gray;
                 }
                 return col + ( EditorGUIUtility.isProSkin ? Color.clear : new Color( 0.1f, 0.1f, 0.1f, 0f ) );
+            }
+
+            public static Color TransparentColor {
+                get;
+                private set;
+            }
+
+            public static Color DefaultTextColor {
+                get;
+                private set;
+            }
+
+            public static Color DefaultWhiteColor {
+                get;
+                private set;
+            }
+
+            public static Color DefaultBlackColor {
+                get;
+                private set;
             }
 
         }

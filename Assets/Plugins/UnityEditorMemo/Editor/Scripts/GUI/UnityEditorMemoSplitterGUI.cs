@@ -6,6 +6,7 @@ using UnityEngine;
 // from UNIBOOK5 by ando http://www.unity-bu.com/2016/06/unibook-5-info.html
 //
 namespace charcolle.UnityEditorMemo {
+
     public class UnityEditorMemoSplitterGUI {
 
         static Type splitterGUILayoutType;
@@ -30,11 +31,10 @@ namespace charcolle.UnityEditorMemo {
             typeof(GUILayoutOption[])
         }, null, new object[] { state.GetState(), options } );
         }
-        
+
         public static void EndVerticalSplit() {
             DoMethod( "EndVerticalSplit", null, new object[0] );
         }
-        
         private static object DoMethod( string name, object obj, object[] args ) {
             return DoMethod( name, new Type[0], obj, args );
         }

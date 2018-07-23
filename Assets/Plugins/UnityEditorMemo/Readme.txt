@@ -40,9 +40,14 @@
 		: UPDATE - UnityEditorMemo's EditorPreference.
 		: UPDATE - You can add a Object in project to your memo. Also, you can add a Object in the scene, which has UnitySceneMemo, to your memo.
 		: UPDATE - You can add memo to gameObjects from hierarchy.
+	2.1 : CHANGE - update PostMemo area GUI.
+		: UPDATE - Add memo's URL.
+		: UPDATE - Add Slack Integration.
+		: UPDATE - Font size setting at Preference.
+		: UPDATE - Customizable size and font-color of SceneMemo at SceneView.
 
 Åú Future
-	2.1 : This asset is not for team development.
+	3.0 : This asset is not for team development.
 		  I have a plan to make this asset suitable for team:)
-	2.1 : Memo backup.
-	2.1 : Customize label color.
+	3.0 : Memo backup.
+	3.0 : Customizable label color.

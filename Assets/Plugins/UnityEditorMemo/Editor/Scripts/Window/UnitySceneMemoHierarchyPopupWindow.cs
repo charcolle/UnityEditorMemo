@@ -12,11 +12,16 @@ namespace charcolle.UnityEditorMemo {
         public void Initialize( UnitySceneMemo memo ) {
             Memo = memo;
             Memo.Initialize( Memo.InstanceId );
-            Memo.isEdit = false;
+            Memo.IsEdit = false;
         }
 
         public override void OnOpen() {
             base.OnOpen();
+
+            if( Memo.SceneMemoWidth == 0 ) {
+                Memo.SceneMemoWidth = 200f;
+                Memo.SceneMemoWidth = 100f;
+            }
 
             editorWindow.minSize = new Vector2( 250, 150 );
             editorWindow.maxSize = new Vector2( 350, 200 );
@@ -47,7 +52,7 @@ namespace charcolle.UnityEditorMemo {
             if( Memo.IsContextClick ) {
                 var menu = new GenericMenu();
                 menu.AddItem( new GUIContent( "Edit" ), false, () => {
-                    Memo.isEdit = true;
+                    Memo.IsEdit = true;
                 } );
                 menu.AddItem( new GUIContent( "Delete" ), false, () => {
                     UndoHelper.SceneMemoUndo( UndoHelper.UNDO_SCENEMEMO_DELETE );
@@ -60,7 +65,11 @@ namespace charcolle.UnityEditorMemo {
         }
 
         public override Vector2 GetWindowSize() {
-            return new Vector2( 250, 150 );
+            if( Memo.ShowAtScene && Memo.IsEdit ) {
+                return new Vector2( 270, 200 );
+            } else {
+                return new Vector2( 270, 150 );
+            }
         }
 
     }

@@ -1,0 +1,8 @@
+{
+    "name": "UnityEditorMemo.Editor",
+    "references": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": []
+}

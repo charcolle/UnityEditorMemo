@@ -32,7 +32,7 @@ namespace charcolle.UnityEditorMemo {
 
         public void OnCategoryChange() {
             for ( int i = 0; i < Memo.Count; i++ ) {
-                Memo[i].isFold = false;
+                Memo[i].isFoldout = false;
                 Memo[i].ObjectRef.Initialize();
             }
         }
