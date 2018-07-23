@@ -1,13 +1,15 @@
-# UnityEditorMemo ver2.0
+# UnityEditorMemo ver2.1
 You can post any texts on UnityEditor.  
 https://assetstore.unity.com/packages/tools/utilities/unityeditormemo-81812
+(At AssetStore not the lastest version yet)
+
 ## Supported Unity versions  
 Unity 5.6 or newer
 
-![unityeditormemo_screenshot](https://github.com/charcolle/UnityEditorMemo/blob/master/UnityEditorMemo_Screenshot_v2.0.png?raw=true)
+![unityeditormemo_screenshot](https://github.com/charcolle/UnityEditorMemo/blob/master/UnityEditorMemo_Screenshot_v2.1.png?raw=true)
 
 
-# Usage
+# Usage(not up-to-date)
 ## UnityEditorMemo
 ### Beginning
 
