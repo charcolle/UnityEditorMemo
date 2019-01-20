@@ -68,6 +68,7 @@ namespace charcolle.UnityEditorMemo {
         //=======================================================
         // Drawer
         //=======================================================
+
         [NonSerialized]
         public bool IsContextClick  = false;
         private Rect rect           = Rect.zero;

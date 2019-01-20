@@ -1,4 +1,4 @@
-# UnityEditorMemo ver2.1
+# UnityEditorMemo ver2.2
 You can post any texts on UnityEditor.  
 https://assetstore.unity.com/packages/tools/utilities/unityeditormemo-81812
 (At AssetStore not the lastest version yet)

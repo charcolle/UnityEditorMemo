@@ -58,7 +58,7 @@ namespace charcolle.UnityEditorMemo {
                 LabelWordWrap.wordWrap    = true;
                 LabelWordWrap.richText    = true;
 
-                LargeDropdown             = new GUIStyle( "LargeDropDown" );
+                LargeDropdown             = new GUIStyle( "DropDown" );
                 LargeDropdown.richText    = true;
 
                 TextAreaWordWrap          = new GUIStyle( GUI.skin.textArea );

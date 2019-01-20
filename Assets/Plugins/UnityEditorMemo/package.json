@@ -1,8 +1,8 @@
 {
 	"name": "com.charcolle.unityeditormemo",
 	"displayName": "Unity Editor Memo",
-	"version": "2.1.0",
-	"unity": "2017.4",
+	"version": "2.2.0",
+	"unity": "2018.3",
 	"description": "You can post any texts on UnityEditor.",
 	"keywords": ["editorextensions", "utilities", "memo", "note", "unityeditormemo"],
 	"category": "editorextensions",

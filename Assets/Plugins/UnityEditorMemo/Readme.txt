@@ -1,5 +1,5 @@
 // UnityEditorMemo
-// ver 2.0
+// ver 2.2
 // thank you for downloading.
 
 Åú About
@@ -33,18 +33,19 @@
 		: Remove title and description.
 		: Fix Undo Process.
 
-	2.0 : CHANGE - save data system. So this version is NOT compatible with previous version.
+	2.0 : CHANGE - Save data system. So this version is NOT compatible with previous version.
 		: CHANGE - Remove remove button from memo menu. You can delete memo from right click menu instead.
 		: CHANGE - Add label type. Also, you can custom your own label.
 		: UPDATE - You can change the name of category.
 		: UPDATE - UnityEditorMemo's EditorPreference.
 		: UPDATE - You can add a Object in project to your memo. Also, you can add a Object in the scene, which has UnitySceneMemo, to your memo.
 		: UPDATE - You can add memo to gameObjects from hierarchy.
-	2.1 : CHANGE - update PostMemo area GUI.
+	2.1 : CHANGE - Update PostMemo area GUI.
 		: UPDATE - Add memo's URL.
 		: UPDATE - Add Slack Integration.
 		: UPDATE - Font size setting at Preference.
 		: UPDATE - Customizable size and font-color of SceneMemo at SceneView.
+	2.2 : UPDATE - Update for Unity2018
 
 Åú Future
 	3.0 : This asset is not for team development.

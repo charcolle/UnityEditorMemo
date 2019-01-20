@@ -138,7 +138,28 @@ namespace charcolle.UnityEditorMemo {
             localId = localIdProp.intValue;
             //if( localId != 0 )
             //    return localId;
+#if UNITY_2018_3_OR_NEWER
+            PrefabAssetType prefabType = PrefabUtility.GetPrefabAssetType( obj );
+            if( prefabType != PrefabAssetType.MissingAsset ) {
+                var o = PrefabUtility.GetPrefabInstanceHandle( obj );
+                if( o == null )
+                    o = obj;
+                serializedObject = new SerializedObject( o );
+                inspectorModeInfo.SetValue( serializedObject, InspectorMode.Debug, null );
+                localIdProp = serializedObject.FindProperty( "m_LocalIdentfierInFile" );
+                localId = localIdProp.intValue;
 
+                if( obj != PrefabUtility.GetOutermostPrefabInstanceRoot( obj as GameObject ) ) {
+                    o = PrefabUtility.GetCorrespondingObjectFromSource( obj );
+                    if( o != null ) {
+                        serializedObject = new SerializedObject( o );
+                        inspectorModeInfo.SetValue( serializedObject, InspectorMode.Debug, null );
+                        localIdProp = serializedObject.FindProperty( "m_LocalIdentfierInFile" );
+                        localSubId = localIdProp.intValue;
+                    }
+                }
+            }
+#else
             PrefabType prefabType = PrefabUtility.GetPrefabType( obj );
             if ( prefabType != PrefabType.None ) {
                 var o = PrefabUtility.GetPrefabObject( obj );
@@ -159,6 +180,7 @@ namespace charcolle.UnityEditorMemo {
                     }
                 }
             }
+#endif
             return localId + localSubId;
         }
 
