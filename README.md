@@ -1,88 +1,177 @@
-# UnityEditorMemo ver2.2
+[日本語のREADME](README_JA.md)
+# UnityEditorMemo
+![](https://img.shields.io/badge/version-v3.0.0-brightgreen.svg)  
 You can post any texts on UnityEditor.  
-https://assetstore.unity.com/packages/tools/utilities/unityeditormemo-81812
-(At AssetStore not the lastest version yet)
+You can post questions you had during your game dev or take notes about your tasks... This asset can be used in various ways.  
 
-## Supported Unity versions  
+[AssetStore](https://assetstore.unity.com/packages/tools/utilities/unityeditormemo-81812)  
+[Package](https://github.com/charcolle/UnityEditorMemo/releases)
+
+![main](desc/unityeditormemo_ver3_main.png)
+
+# Supported version
 Unity 5.6 or newer
 
-![unityeditormemo_screenshot](https://github.com/charcolle/UnityEditorMemo/blob/master/UnityEditorMemo_Screenshot_v2.1.png?raw=true)
+# Download by PackageManager
+Add this text to your manifest.json.  
+*NOTE: I think UnityEditorMemo's save data system is not optimized for PackageManager. Be careful to use this.*
+``` 
+"com.charcolle.unityeditormemo": "https://github.com/charcolle/UnityEditorMemoPackageManager.git" 
+```
+
+# Contact
+Any request are welcome :)  
+[UnityConnect UnityEditorMemo]()
 
 
-# Usage(not up-to-date)
-## UnityEditorMemo
-### Beginning
+# Usage
+[Youtube](https://www.youtube.com/watch?v=yL0bPQLsaRA)  
 
-1. Import UnityEditorMemo to your Project.
-2. Select [Window] ->[UnityEditorMemo] .
+![main](desc/unityeditormemo_ver3_main_overview.png)
 
-![unityeditormemo_screenshot](https://github.com/charcolle/UnityEditorMemo/blob/master/DescFiles/image/unityeditormemo_1_1.png)
-
-### Category
-Memos are managed by category.
-#### ◆Create Category
-1. Press [+] button at the top of the window. You can open category menu.
-2. Enter the name of category on the text field, then press *Register* button. 
-
-![unityeditormemo_screenshot](https://github.com/charcolle/UnityEditorMemo/blob/master/DescFiles/image/unityeditormemo_2_1.png)
-
-#### ◆Edit Category
-1. When you press [≡] button, you can edit the name of category you have created. When you press [≡] again, the edits are saved.
-2. When you press [x] button, you can delete the category.
-
-![unityeditormemo_screenshot](https://github.com/charcolle/UnityEditorMemo/blob/master/DescFiles/gif/unityeditormemo_category.gif)
-
-NOTE: You cannot edit nor delete  *default* category .
-
-### Memo
-#### ◆Create Memo
-
-1. Write something in text-area. Then press *Post* button. The memo is created.
-2. You can select the label of the memo. Also, you can add your emotions to the memo.
-
-![unityeditormemo_screenshot](https://github.com/charcolle/UnityEditorMemo/blob/master/DescFiles/image/unityeditormemo_3_1.png)
-
-#### ◆Edit Memo
-1. You can edit the memo when you click right-mouse-button over the memo and select [Edit], or press [≡] button at the top of right.
-2. If you want to delete the memo, click right-mouse-button over the memo and select [Delete].
-
-![unityeditormemo_screenshot](https://github.com/charcolle/UnityEditorMemo/blob/master/DescFiles/image/unityeditormemo_3_2.png)
-
-3. You can add any Assets in project to your memo. Drag drop the asset to the memo. You can easily access the asset.
-
-NOTE : Basically you cannot add the GameObject in scene. If the GameObject has SceneMemo, you can add the GameObject to your memo.
-
-![unityeditormemo_screenshot](https://github.com/charcolle/UnityEditorMemo/blob/master/DescFiles/gif/unityeditormemo_object.gif)
-
-### ◆Label
-1. Label type has Red, Green, Cyan, Yellow and Magenta.
-2. You can name the label color. Open category menu and set label name whatever you like.
-
-![unityeditormemo_screenshot](https://github.com/charcolle/UnityEditorMemo/blob/master/DescFiles/gif/unityeditormemo_label.gif)
+* [Open UnityEditorMemo](##Open-UnityEditorMemo)
+* [Memo](##Memo)
+* [Category](##Category)
+* [Preference](##Preference)
+* [SceneMemo](##SceneMemo)
+* [Slack Integration](##Slack-Integration)
 
 
+## Open UnityEditorMemo
+Select [Window]->[UnityEditorMemo].
 
-## UnitySceneMemo
-You can add the memo to the GameObject in scene.
+![main](desc/unityeditormemo_ver3_open.png)
 
-![unityeditormemo_screenshot](https://github.com/charcolle/UnityEditorMemo/blob/master/DescFiles/gif/unityeditormemo_scenememo.gif)
+## Memo
+The Memo-view displays the list of the memos you posted.  
+The colored toggles at bottom of the view is called **Label**, and you can display only the selected label by selecting a colored toggle.
+    
+### Create Memo
+To post a memo, enter the texts on the Post-view and press the [**Post**] button.  
+Change the label from the drop-down menu beside the Date. Set emoji with the memo by selecting emoji beside the Post button.  
+If you enter the URL on **the URL text field**, you can open the URL with the right-click context menu. 
 
-### ◆Create SceneMemo
-1. Select the GameObject you want to add the memo to, and press [+] button.
-2. When you select the GameObject which has the SceneMemo, the balloon icon is shown instead of [+] button.
-3. You can show the SceneMemo when you press   balloon icon.
+![main](desc/unityeditormemo_ver3_post_view.png)
 
-![unityeditormemo_screenshot](https://github.com/charcolle/UnityEditorMemo/blob/master/DescFiles/image/unityeditormemo_4_1.png)
+### Edit Memo
+Edit a memo by **double click** or selecting **[Edit] at the right-click context menu**.  
 
-### ◆Edit SceneMemo
-1. You can edit the SceneMemo when you click right-mouse-button over the memo and select [Edit], or press [≡] button at the top of right.
-2. [ShowAtScene] is ON, the SceneMemo will appear at SceneView when you select the GameObject.
-3. You can select the label of the SceneMemo.
+When edit mode, you can change any memo contents exept for Date. Regarding label, you can change it from the right-click context menu.  
+Exit edit mode from **double click** or selecting **[Done] at the right-click context menu**.   
 
-![unityeditormemo_screenshot](https://github.com/charcolle/UnityEditorMemo/blob/master/DescFiles/image/unityeditormemo_4_2.png)
+![main](desc/unityeditormemo_ver3_open.png)
 
-### ◆Preference
-1. You can disable UnitySceneMemo from Preference window.
-2. You can change the SceneMemo's position at SceneView from Preference window.
+### Delete
+Delete a memo by **double click** or selecting **[Delete] at the right-click context menu**. 
 
-![unityeditormemo_screenshot](https://github.com/charcolle/UnityEditorMemo/blob/master/DescFiles/image/unityeditormemo_5_1.png)
+![main](desc/unityeditormemo_ver3_memo_delete.png)
+
+### Add an Asset to Memo
+Add an Asset to the memo by drugging the Asset to the memo.  You can access the Asset quickly from UnityEditorMemo.  
+When edit mode, you can remove the Asset from the memo.
+
+![main](desc/unityeditormemo_ver3_objectref.png)
+
+### Backup Memo
+#### Export
+Export all the memo data for data migration or backup. Select [**Export**] at [Menu] above the category view and export **.unitymemo** file. This file will be used for import the memo.
+
+#### Inport
+The output **.unityememo** file is reflected to the other project.
+* Override...This mode will erase all current memo data and override it.
+* Additive...This mode will not erase all current memo data and will add categories from the output file.
+
+*Note: the default category will not be imported with Additive menu*
+
+## Category
+
+### Create Category
+Create a category by selecting [**Create New Category**] at [Menu] above the category view.  
+A category named [new Category] will be created and you can edit the name.
+
+![main](desc/unityeditormemo_ver3_category_create.png)
+
+### Edit Category
+Edit a category by selecting it for long time or selecting [**Rename**] at the right-click context menu.
+
+![main](desc/unityeditormemo_ver3_category_create_2.png)
+
+### Delete Category
+Delete a category by **double click** or selecting **[Edit] at the right-click context menu**. 
+
+![main](desc/unityeditormemo_ver3_category_delete.png)
+
+### Sort Category Order
+Move to any position by dragging a category.
+
+![main](desc/unityeditormemo_ver3_category_sort.png)
+
+### Switch Category Display
+Switch the display of the category view with **[≡] toggle**.
+
+![main](desc/unityeditormemo_ver3_category_hide.png)
+
+*Note: the default category will not be renamed nor deleted*
+
+
+## Preference
+Open the Preference window from [**Open Preference**] at [Menu] above the category view.  
+You can edit the following settings.
+* Size of memo font
+* Name of the labels
+* Enable UnitySceneMenu
+* Enable Slack Integration
+
+![main](desc/unityeditormemo_ver3_preference_main.png)
+
+## SceneMemo
+You can add a SceneMemo to the GameObject.  
+*Note: the Scene the gameobject belonging to must be saved at Project.*
+
+### Enable SceneMemo
+Check [**Enable UnitySceneMemo**] at Preference window.  
+
+![main](desc/unityeditormemo_scene_enable.png)
+
+*NOTE: after activation, you must play UnityEditor or compile the scripts*
+
+### Add a SceneMemo to the GameObject
+Create a SceneMemo by selecting **[+] button** which displays when you select the GameObject.  A Balloon icon will be displayed and you can see the memo by selecting it.
+
+![main](desc/unityeditormemo_ver3_scenememo_create.png)
+
+
+### Edit SceneMemo
+Edit the SceneMemo content by selecting **[+] button** or selecting **[Edit] at the right-click context menu**.  
+Change the SceneMemo color from drop-down menu at the footer.  
+If you enable [**ShowAtScene**] toggle, the SceneMemo will be displayed at SceneView when you select the GameObject. 
+The settings(color, size) displayed when enable [**ShowAtScene**] toggle affects the SceneMemo display at SceneView. 
+
+![main](desc/unityeditormemo_ver3_scenememo.png)
+
+### Delete SceneMemo
+Delete the SceneMemo by showing SceneMemo then selecting **[Delete] at the right-click context menu**. 
+
+### Add SceneMemo to Memo
+You can add SceneMemo to Memo by dragging the GameObject to the memo.
+
+![main](desc/unityeditormemo_ver3_scenememo_2.png)
+
+
+## Slack Integration
+You can send the memo to Slack.
+
+*NOTE: only send a memo, cannot edit a memo at Slack channel with UnityEditorMemo*
+
+### Enable Slack Integration
+Check [**Use Slack Integration**] at Preference window.  
+Enter the AccessToken to send to your Slack channel.
+
+![main](desc/unityeditormemo_ver3_slack_1.png)
+
+When enable Slack Integration, the Post view will be updated.
+
+#### Send to Slack
+The memo will be sent to your Slack channel only when enable **[Post to Slack]** toggle so you can send a memo when you want to.
+
+![main](desc/unityeditormemo_ver3_slack_2.png)
