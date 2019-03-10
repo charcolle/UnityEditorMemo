@@ -3,7 +3,7 @@
 UnityEditor上でメモを取ることが出来ます。  
 開発中に疑問に思ったことや、次エディタを開いたときに何から始めるかを記述するなど、様々な用途で使うことができます。  
   
-[AssetStore](https://assetstore.unity.com/packages/tools/utilities/unityeditormemo-81812)  
+[AssetStore(まだ審査中です)](https://assetstore.unity.com/packages/tools/utilities/unityeditormemo-81812)  
 [Package](https://github.com/charcolle/UnityEditorMemo/releases)
 
 ![main](desc/unityeditormemo_ver3_main.png)

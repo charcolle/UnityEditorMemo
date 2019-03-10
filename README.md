@@ -4,7 +4,7 @@
 You can post any texts on UnityEditor.  
 You can post questions you had during your game dev or take notes about your tasks... This asset can be used in various ways.  
 
-[AssetStore](https://assetstore.unity.com/packages/tools/utilities/unityeditormemo-81812)  
+[AssetStore(not up to date)](https://assetstore.unity.com/packages/tools/utilities/unityeditormemo-81812)  
 [Package](https://github.com/charcolle/UnityEditorMemo/releases)
 
 ![main](desc/unityeditormemo_ver3_main.png)
