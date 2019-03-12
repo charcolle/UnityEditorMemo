@@ -20,7 +20,7 @@ Unity 5.6 or newer
 
 # Contact
 どんな要望も大歓迎です :)  
-[UnityConnect UnityEditorMemo]()
+[UnityConnect UnityEditorMemo](https://connect.unity.com/p/unityeditormemo-ver3-0-0)
 
 # 使い方
 [Youtube](https://www.youtube.com/watch?v=yL0bPQLsaRA)   

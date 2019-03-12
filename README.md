@@ -21,7 +21,7 @@ Add this text to your manifest.json.
 
 # Contact
 Any request are welcome :)  
-[UnityConnect UnityEditorMemo]()
+[UnityConnect UnityEditorMemo](https://connect.unity.com/p/unityeditormemo-ver3-0-0)
 
 
 # Usage
