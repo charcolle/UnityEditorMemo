@@ -1,6 +1,6 @@
 [日本語のREADME](README_JA.md)
 # UnityEditorMemo
-![](https://img.shields.io/badge/version-v3.0.0-brightgreen.svg)  
+![](https://img.shields.io/badge/version-3.0.1-brightgreen)  
 You can post any texts on UnityEditor.  
 You can post questions you had during your game dev or take notes about your tasks... This asset can be used in various ways.  
 

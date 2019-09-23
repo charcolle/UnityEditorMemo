@@ -25,10 +25,16 @@ namespace charcolle.UnityEditorMemo {
                     UnitySceneMemoHelper.InitializeSceneMemo( EditorSceneManager.GetSceneAt( i ) );
             };
 
+#if UNITY_2019_1_OR_NEWER            
+            SceneView.duringSceneGui += ( view ) => {
+                UnitySceneMemoSceneView.OnGUI( currentMemo );
+            };
+#else
             // draw at SceneView
             SceneView.onSceneGUIDelegate += ( view ) => {
                 UnitySceneMemoSceneView.OnGUI( currentMemo );
             };
+#endif
         }
 
         private static UnitySceneMemo currentMemo;

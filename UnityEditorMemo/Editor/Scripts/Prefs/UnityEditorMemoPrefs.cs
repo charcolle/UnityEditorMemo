@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using System.Collections.Generic;
 
 using GUIHelper = charcolle.UnityEditorMemo.GUIHelper;
 
@@ -13,6 +14,35 @@ namespace charcolle.UnityEditorMemo {
 
         private static readonly string[] SCENEMEMO_POSITION = new string[] { "TopLeft", "BottomLeft", "BottomRight" };
 
+#if UNITY_2019_1_OR_NEWER
+        [SettingsProvider]
+        public static SettingsProvider PreferenceView()
+        {
+            var provider = new SettingsProvider( "Preferences/UnityEditorMemo", SettingsScope.User )
+            {
+                label = "UnityEditorMemo",
+                guiHandler = ( searchText ) => {
+                    GUI.skin.label.richText = true;
+                    EditorGUIUtility.labelWidth = 150f;
+
+                    EditorGUILayout.HelpBox( "Setting will changed after unity editor compiled or played.", MessageType.Warning );
+                    BasicSettingGUI();
+                    GUILayout.Space( 20 );
+                    SceneMenuSettingGUI();
+                    GUILayout.Space( 20 );
+                    SlackSettingGUI();
+
+                    GUILayout.FlexibleSpace();
+                    GUILayout.Label( "Version " + UnityEditorMemoInfo.Version, EditorStyles.miniBoldLabel );
+
+                    GUI.skin.label.richText = false;
+                    EditorGUIUtility.labelWidth = 0f;
+                },
+                keywords = new HashSet<string>( new[] { "UnityEditormemo" } )
+            };
+            return provider;
+        }
+#else        
         [PreferenceItem( "UnityEditorMemo" )]
         public static void PreferenceView() {
             GUI.skin.label.richText = true;
@@ -31,11 +61,12 @@ namespace charcolle.UnityEditorMemo {
             GUI.skin.label.richText = false;
             EditorGUIUtility.labelWidth = 0f;
         }
+#endif
 
         private static void BasicSettingGUI() {
             EditorGUILayout.BeginVertical();
             {
-                UnityEditorMemoFontSize = EditorGUILayout.IntSlider( "Font Size *", UnityEditorMemoFontSize, 9, 20 );
+                UnityEditorMemoFontSize = EditorGUILayout.IntSlider( "Font Size", UnityEditorMemoFontSize, 9, 20 );
                 GUILayout.Space( 3 );
                 GUILayout.Label( "Label Settings" );
                 GUILayout.Space( 3 );
@@ -104,10 +135,10 @@ namespace charcolle.UnityEditorMemo {
             if( UnityEditorMemoUseSlack ) {
                 EditorGUILayout.BeginVertical( EditorStyles.helpBox );
                 {
-                    GUILayout.Label( "AccessToken *" );
+                    GUILayout.Label( "AccessToken" );
                     UnityEditorMemoSlackAccessToken = EditorGUILayout.TextField( UnityEditorMemoSlackAccessToken );
                     GUILayout.Space( 3 );
-                    GUILayout.Label( "Channel *" );
+                    GUILayout.Label( "Channel" );
                     UnityEditorMemoSlackChannel = EditorGUILayout.TextField( UnityEditorMemoSlackChannel );
                 }
                 EditorGUILayout.EndVertical();
@@ -117,7 +148,7 @@ namespace charcolle.UnityEditorMemo {
         private static void LabelGUI() {
         }
 
-        #region save data
+#region save data
 
         //======================================================================
         // Save Data
@@ -248,7 +279,7 @@ namespace charcolle.UnityEditorMemo {
             }
         }
 
-        #endregion
+#endregion
 
         private static string projectName;
         private static string ProjectName {

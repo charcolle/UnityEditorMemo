@@ -72,8 +72,10 @@ namespace charcolle.UnityEditorMemo {
             var category = GetCategory( categoryIdx );
             if( category != null ) {
                 var memo = category.Memo;
-                if( !memo.Any( m => m.depth == -1 ) ) {
-                    for( int i = 0; i < memo.Count; i++ ) {
+                if ( memo.Count == 0 || memo[0].depth != -1 )
+                {
+                    for ( int i = 0; i < memo.Count; i++ )
+                    {
                         memo[ i ].id = i;
                         memo[ i ].depth = 0;
                     }

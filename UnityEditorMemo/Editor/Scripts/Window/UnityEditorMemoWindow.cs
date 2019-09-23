@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
+#if !UNITY_2018_3_OR_NEWER
+using System.Reflection;
+#endif
 
 using UndoHelper   = charcolle.UnityEditorMemo.UndoHelper;
 using GUIHelper    = charcolle.UnityEditorMemo.GUIHelper;
@@ -81,7 +83,7 @@ namespace charcolle.UnityEditorMemo {
             categoryTreeView = new UnityEditorMemoCategoryWindowTreeView( categoryTreeViewState, WindowHelper.Data.Category );
             categoryTreeView.OnContextClick += OnCategoryContextClicked;
             categoryTreeView.OnCategoryOrderChanged += OnCategoryOrderChanged;
-            categoryTreeView.SetSelection( categoryTreeViewState.selectedIDs, TreeViewSelectionOptions.RevealAndFrame );
+            categoryTreeView.SetSelection( categoryTreeViewState.selectedIDs, TreeViewSelectionOptions.FireSelectionChanged );
             categoryTreeView.Reload();
         }
 
@@ -91,10 +93,12 @@ namespace charcolle.UnityEditorMemo {
             if( memoTreeViewState == null )
                 memoTreeViewState = new TreeViewState();
 
+            var memo = WindowHelper.GetCategory( selectCategoryId ).Memo;
             var rowRectSize = isCategoryVisible ? ( preMemoWidth == 0 ? position.width * 0.7f : preMemoWidth ) : position.width;
             var treeModel = new TreeModel<UnityEditorMemo>( WindowHelper.GetCategory( selectCategoryId ).Memo );
-            memoTreeView = new UnityEditorMemoTreeView( memoTreeViewState, treeModel, rowRectSize );
+            memoTreeView = new UnityEditorMemoTreeView( memoTreeViewState, treeModel, memo, rowRectSize );
             memoTreeView.OnContextClicked += OnMemoContextClicked;
+            memoTreeView.OnMemoOrderChanged += OnMemoOrderChanged;
             memoTreeView.SelectLabel = ( UnityEditorMemoLabel )selectLabel;
             memoTreeView.Reload();
         }
@@ -116,7 +120,7 @@ namespace charcolle.UnityEditorMemo {
                 EditorUtility.SetDirty( WindowHelper.Data );
         }
 
-        #region gui contents
+#region gui contents
 
         //======================================================================
         // gui contents
@@ -146,7 +150,7 @@ namespace charcolle.UnityEditorMemo {
             SplitterGUI.EndVerticalSplit();
         }
 
-        #region header
+#region header
 
         void HeaderGUI() {
             EditorGUILayout.BeginHorizontal( EditorStyles.toolbar );
@@ -193,9 +197,9 @@ namespace charcolle.UnityEditorMemo {
             EditorGUILayout.EndHorizontal();
         }
 
-        #endregion
+#endregion
 
-        #region memo contents
+#region memo contents
 
         private float preMemoWidth = 0f;
         void MemoGUI() {
@@ -281,9 +285,9 @@ namespace charcolle.UnityEditorMemo {
             EditorGUILayout.EndHorizontal();
         }
 
-        #endregion
+#endregion
 
-        #region post contents
+#region post contents
 
         [SerializeField]
         private string memoText        = "";
@@ -370,13 +374,12 @@ namespace charcolle.UnityEditorMemo {
                         // post button
                         GUI.backgroundColor = Color.cyan;
                         if ( GUILayout.Button( "Post", new GUILayoutOption[] { GUILayout.Height( 30 ), GUILayout.MaxWidth( 120 ) } ) ) {
-                            Undo.IncrementCurrentGroup();
                             UndoHelper.WindowUndo( UndoHelper.UNDO_POST );
-                            if ( !string.IsNullOrEmpty( memoText ) ) {
+                            if( !string.IsNullOrEmpty( memoText ) ) {
                                 var memo = new UnityEditorMemo( memoText, postMemoLabel, postMemoTex, postMemoUrl );
                                 memo.id = category.Memo.Count;
                                 if( UnityEditorMemoPrefs.UnityEditorMemoUseSlack && postToSlack ) {
-                                    if ( SlackHelper.Post( memo, category.Name ) )
+                                    if( SlackHelper.Post( memo, category.Name ) )
                                         OnMemoPost( category, memo );
                                 } else {
                                     OnMemoPost( category, memo );
@@ -398,9 +401,9 @@ namespace charcolle.UnityEditorMemo {
 
 #endregion
 
-        #endregion
+#endregion
 
-        #region callback
+#region callback
 
         private void OnCategoryChange() {
             Undo.IncrementCurrentGroup();
@@ -416,14 +419,20 @@ namespace charcolle.UnityEditorMemo {
         private void OnCategoryContextClicked( UnityEditorMemoCategory caterogy ) {
             var menu = new GenericMenu();
 
-            if( caterogy.Name != "default" ) {
-                menu.AddItem( new GUIContent( "Rename" ), false, () => {
-                    categoryTreeView.BeginRename( caterogy );
+            if( caterogy == null ) {
+                menu.AddItem( new GUIContent( "Create" ), false, () => {
+                    OnCategoryCreate();
                 } );
-                menu.AddSeparator( "" );
-                menu.AddItem( new GUIContent( "Delete" ), false, () => {
-                    OnCategoryDelete( caterogy );
-                } );
+            } else {
+                if( caterogy.Name != "default" ) {
+                    menu.AddItem( new GUIContent( "Rename" ), false, () => {
+                        categoryTreeView.BeginRename( caterogy );
+                    } );
+                    menu.AddSeparator( "" );
+                    menu.AddItem( new GUIContent( "Delete" ), false, () => {
+                        OnCategoryDelete( caterogy );
+                    } );
+                }
             }
             menu.ShowAsContext();
         }
@@ -446,6 +455,7 @@ namespace charcolle.UnityEditorMemo {
             UndoHelper.EditorMemoUndo( UndoHelper.UNDO_CREATE_CATEGORY );
 
             var newCategory = new UnityEditorMemoCategory( "new Category" );
+            newCategory.Memo.Add( UnityEditorMemo.Root );
             WindowHelper.Data.AddCategory( newCategory );
             CategoryTreeViewInitialize();
             categoryTreeView.BeginRename( newCategory );
@@ -488,30 +498,30 @@ namespace charcolle.UnityEditorMemo {
             } );
 
             if( !string.IsNullOrEmpty( UnityEditorMemoPrefs.Label1 ) ) {
-                menu.AddItem( new GUIContent( "Label/" + UnityEditorMemoPrefs.Label1 ), memo.Label == 0, () => {
-                    UndoHelper.EditorMemoUndo( UndoHelper.UNDO_MEMO_EDIT );
-                    memo.Label = 0;
-                } );
-            }
-
-            if( !string.IsNullOrEmpty( UnityEditorMemoPrefs.Label2 ) ) {
-                menu.AddItem( new GUIContent( "Label/" + UnityEditorMemoPrefs.Label2 ), ( int )memo.Label == 1, () => {
+                menu.AddItem( new GUIContent( "Label/" + UnityEditorMemoPrefs.Label1 ), ( int )memo.Label == 1, () => {
                     UndoHelper.EditorMemoUndo( UndoHelper.UNDO_MEMO_EDIT );
                     memo.Label = ( UnityEditorMemoLabel )1;
                 } );
             }
 
-            if( !string.IsNullOrEmpty( UnityEditorMemoPrefs.Label3 ) ) {
-                menu.AddItem( new GUIContent( "Label/" + UnityEditorMemoPrefs.Label3 ), ( int )memo.Label == 2, () => {
+            if( !string.IsNullOrEmpty( UnityEditorMemoPrefs.Label2 ) ) {
+                menu.AddItem( new GUIContent( "Label/" + UnityEditorMemoPrefs.Label2 ), ( int )memo.Label == 2, () => {
                     UndoHelper.EditorMemoUndo( UndoHelper.UNDO_MEMO_EDIT );
                     memo.Label = ( UnityEditorMemoLabel )2;
                 } );
             }
 
-            if( !string.IsNullOrEmpty( UnityEditorMemoPrefs.Label4 ) ) {
-                menu.AddItem( new GUIContent( "Label/" + UnityEditorMemoPrefs.Label4 ), ( int )memo.Label == 3, () => {
+            if( !string.IsNullOrEmpty( UnityEditorMemoPrefs.Label3 ) ) {
+                menu.AddItem( new GUIContent( "Label/" + UnityEditorMemoPrefs.Label3 ), ( int )memo.Label == 3, () => {
                     UndoHelper.EditorMemoUndo( UndoHelper.UNDO_MEMO_EDIT );
                     memo.Label = ( UnityEditorMemoLabel )3;
+                } );
+            }
+
+            if( !string.IsNullOrEmpty( UnityEditorMemoPrefs.Label4 ) ) {
+                menu.AddItem( new GUIContent( "Label/" + UnityEditorMemoPrefs.Label4 ), ( int )memo.Label == 4, () => {
+                    UndoHelper.EditorMemoUndo( UndoHelper.UNDO_MEMO_EDIT );
+                    memo.Label = ( UnityEditorMemoLabel )4;
                 } );
             }
 
@@ -538,6 +548,15 @@ namespace charcolle.UnityEditorMemo {
             menu.ShowAsContext();
         }
 
+        private void OnMemoOrderChanged( List<UnityEditorMemo> newMemos )
+        {
+            UndoHelper.EditorMemoUndo( UndoHelper.UNDO_MEMO_EDIT );
+
+            var currentCategory = WindowHelper.GetCategory( selectCategoryId );
+            currentCategory.Memo = newMemos;
+            Initialize();
+        }
+
         private void OnUnityEditorMemoExport() {
             var exportData = new UnityEditorMemoExport( WindowHelper.Data.Category );
             var json = JsonUtility.ToJson( exportData );
@@ -559,7 +578,7 @@ namespace charcolle.UnityEditorMemo {
             Initialize();
         }
 
-        #endregion
+#endregion
 
     }
 }

@@ -56,6 +56,11 @@ namespace charcolle.UnityEditorMemo {
 
         protected override void ContextClickedItem( int id ) {
             OnContextClick( category[ id ] );
+            Event.current.Use();
+        }
+
+        protected override void ContextClicked() {
+            OnContextClick( null );
         }
 
         protected override void RowGUI( RowGUIArgs args ) {
@@ -123,7 +128,7 @@ namespace charcolle.UnityEditorMemo {
                 return;
 
             // latter index must be adjusted.
-            if( insertIndex > draggedRows[ 0 ].id )
+            if ( insertIndex > draggedRows[ 0 ].id )
                 --insertIndex;
 
             // change category order
@@ -137,7 +142,8 @@ namespace charcolle.UnityEditorMemo {
                 newCategory.Add( category[ id ] );
 
             category = newCategory;
-            OnCategoryOrderChanged( newCategory );
+            if ( OnCategoryOrderChanged != null )
+                OnCategoryOrderChanged.Invoke( newCategory );
 
             // restore selection
             var selectedIDs = new List<int>() { insertIndex };

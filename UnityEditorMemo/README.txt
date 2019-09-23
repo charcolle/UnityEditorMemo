@@ -1,15 +1,15 @@
 // UnityEditorMemo
-// ver 3.0.0
+// ver 3.0.1
 // thank you for downloading.
 
-Åú About
+About
    You can post any texts on UnityEditor.
    https://github.com/charcolle/UnityEditorMemo
 
-Åú Author
+Author
 	Charcolle : charcolle.1234@gmail.com
 
-Åú Description
+Description
 	- You can use this asset from MenuBar, [Window] -> [UnityEdiorMemo].
 	  When opening the window, then post any texts on it.
 	  You can add a category of memo. Press plus button, and input the category name, then press [Register] button.
@@ -17,14 +17,14 @@
 	- You can add memo to your gameObjects from Hierarchy view. Select the gameObject and press [+] button.
 	  You can disable this system from Preference.
 
-Åú Lisence
+Lisence
 	MIT
 
-Åú Attension
+Attension
 	- You can move UnityEditorMemo's folder to any folder, but you must not edit the child folder's structure.
 	- If you use this asset with team, you should ignore this asset at git's setting.
 
-Åú Version
+Version
 	1.0 : Release
 
 	1.1 : Remove Memo's ScriptableObject from Create Menu.
@@ -51,3 +51,5 @@
 		: CHANGE - Remove category view and implement category side bar.
 		: UPDATE - Implement search memo.
 		: UPDATE - Implement export/import memo data.
+
+	3.0.1 : UPDATE - Update for Unity2019

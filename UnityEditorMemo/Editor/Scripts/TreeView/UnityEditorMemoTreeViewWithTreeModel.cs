@@ -79,11 +79,11 @@ namespace charcolle.UnityEditorMemo {
 					AddChildrenRecursive(m_TreeModel.root, 0, m_Rows);
 			}
 
-			// We still need to setup the child parent information for the rows since this
-			// information is used by the TreeView internal logic (navigation, dragging etc)
-			SetupParentsAndChildrenFromDepths (root, m_Rows);
+            // We still need to setup the child parent information for the rows since this
+            // information is used by the TreeView internal logic (navigation, dragging etc)
+            SetupParentsAndChildrenFromDepths (root, m_Rows);
 
-			return m_Rows;
+            return m_Rows;
 		}
 
 		void AddChildrenRecursive (T parent, int depth, IList<TreeViewItem> newRows)
