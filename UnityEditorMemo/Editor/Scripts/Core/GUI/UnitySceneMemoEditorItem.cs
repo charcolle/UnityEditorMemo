@@ -30,6 +30,9 @@ namespace charcolle.UnityEditorMemo {
         private void DrawProcess() {
             rect = EditorGUILayout.BeginVertical();
             {
+                var e = Event.current;
+                var isEditChangeCommand = (e.type == EventType.KeyUp) && e.shift && e.keyCode == KeyCode.Return;
+
                 // header
                 GUI.backgroundColor = GUIHelper.Colors.LabelColor( Label );
                 EditorGUILayout.BeginHorizontal( EditorStyles.toolbar );
@@ -38,6 +41,10 @@ namespace charcolle.UnityEditorMemo {
                     if( edit != IsEdit ) {
                         GUIUtility.keyboardControl = 0;
                         IsEdit = edit;
+                    } else if(isEditChangeCommand)
+                    {
+                        GUIUtility.keyboardControl = 0;
+                        IsEdit = !IsEdit;
                     }
                     EditorGUILayout.BeginHorizontal();
                     {

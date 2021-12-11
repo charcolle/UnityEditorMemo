@@ -1,6 +1,6 @@
 [日本語のREADME](README_JA.md)
 # UnityEditorMemo
-![](https://img.shields.io/badge/version-3.0.1-brightgreen)  
+![](https://img.shields.io/badge/version-3.1.0-brightgreen)  
 You can post any texts on UnityEditor.  
 You can post questions you had during your game dev or take notes about your tasks... This asset can be used in various ways.  
 
@@ -10,7 +10,7 @@ You can post questions you had during your game dev or take notes about your tas
 ![main](desc/unityeditormemo_ver3_main.png)
 
 # Supported version
-Unity 5.6 or newer
+Unity 2018 or newer
 
 # Download by PackageManager
 Add this text to your manifest.json.  
@@ -18,11 +18,6 @@ Add this text to your manifest.json.
 ``` 
 "com.charcolle.unityeditormemo": "https://github.com/charcolle/UnityEditorMemoPackageManager.git" 
 ```
-
-# Contact
-Any request are welcome :)  
-[UnityConnect UnityEditorMemo](https://connect.unity.com/p/unityeditormemo-ver3-0-0)
-
 
 # Usage
 [Youtube](https://www.youtube.com/watch?v=yL0bPQLsaRA)  

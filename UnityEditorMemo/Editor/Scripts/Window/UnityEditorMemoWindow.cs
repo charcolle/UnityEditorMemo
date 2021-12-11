@@ -372,8 +372,11 @@ namespace charcolle.UnityEditorMemo {
                         //}
 
                         // post button
+                        var e = Event.current;
+                        var isPostCommand = ( e.type == EventType.KeyUp ) && e.shift && e.keyCode == KeyCode.Return;
+
                         GUI.backgroundColor = Color.cyan;
-                        if ( GUILayout.Button( "Post", new GUILayoutOption[] { GUILayout.Height( 30 ), GUILayout.MaxWidth( 120 ) } ) ) {
+                        if ( GUILayout.Button( "Post", new GUILayoutOption[] { GUILayout.Height( 30 ), GUILayout.MaxWidth( 120 ) } ) || isPostCommand) {
                             UndoHelper.WindowUndo( UndoHelper.UNDO_POST );
                             if( !string.IsNullOrEmpty( memoText ) ) {
                                 var memo = new UnityEditorMemo( memoText, postMemoLabel, postMemoTex, postMemoUrl );
@@ -420,7 +423,7 @@ namespace charcolle.UnityEditorMemo {
             var menu = new GenericMenu();
 
             if( caterogy == null ) {
-                menu.AddItem( new GUIContent( "Create" ), false, () => {
+                menu.AddItem( new GUIContent( "Create Category" ), false, () => {
                     OnCategoryCreate();
                 } );
             } else {

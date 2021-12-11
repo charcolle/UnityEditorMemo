@@ -1,5 +1,5 @@
 // UnityEditorMemo
-// ver 3.0.1
+// ver 3.1.0
 // thank you for downloading.
 
 About
@@ -7,7 +7,7 @@ About
    https://github.com/charcolle/UnityEditorMemo
 
 Author
-	Charcolle : charcolle.1234@gmail.com
+	Charcolle : charcolle.moon.0180@gmail.com
 
 Description
 	- You can use this asset from MenuBar, [Window] -> [UnityEdiorMemo].
@@ -52,4 +52,7 @@ Version
 		: UPDATE - Implement search memo.
 		: UPDATE - Implement export/import memo data.
 
-	3.0.1 : UPDATE - Update for Unity2019
+	3.0.1 : UPDATE - Update for Unity2019.
+
+	3.1 : UPDATE - Implement Post ShortcutKey.
+		: CHANGE - Change Emoji mark.

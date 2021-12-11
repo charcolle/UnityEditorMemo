@@ -1,5 +1,5 @@
 # UnityEditorMemo
-![](https://img.shields.io/badge/version-3.0.1-brightgreen)  
+![](https://img.shields.io/badge/version-3.1.0-brightgreen)  
 UnityEditor上でメモを取ることが出来ます。  
 開発中に疑問に思ったことや、次エディタを開いたときに何から始めるかを記述するなど、様々な用途で使うことができます。  
   
@@ -9,7 +9,7 @@ UnityEditor上でメモを取ることが出来ます。
 ![main](desc/unityeditormemo_ver3_main.png)
 
 # 対応バージョン
-Unity 5.6 or newer
+Unity 2018 or newer
 
 # PackageManagerでダウンロード
 以下の一文をmanifest.jsonに追加してください。  
@@ -17,10 +17,6 @@ Unity 5.6 or newer
 ``` 
 "com.charcolle.unityeditormemo": "https://github.com/charcolle/UnityEditorMemoPackageManager.git" 
 ```
-
-# Contact
-どんな要望も大歓迎です :)  
-[UnityConnect UnityEditorMemo](https://connect.unity.com/p/unityeditormemo-ver3-0-0)
 
 # 使い方
 [Youtube](https://www.youtube.com/watch?v=yL0bPQLsaRA)   

@@ -173,46 +173,32 @@ namespace charcolle.UnityEditorMemo {
         public static class Textures {
 
             public static Texture2D[] Emotions;
-            public static Texture2D[] Menu;
             public static Texture2D[] Footer;
 
             static Textures() {
                 var guiDir = FileUtility.GUIDirectoryPath;
 
-                Happy    = AssetDatabase.LoadAssetAtPath<Texture2D>( guiDir + "Texture/unityeditormemo_smile.png" );
-                Sad      = AssetDatabase.LoadAssetAtPath<Texture2D>( guiDir + "Texture/unityeditormemo_sad.png" );
-                Angry    = AssetDatabase.LoadAssetAtPath<Texture2D>( guiDir + "Texture/unityeditormemo_angry.png" );
-                Home     = AssetDatabase.LoadAssetAtPath<Texture2D>( guiDir + "Texture/unityeditormemo_home.png" );
-                Plus     = AssetDatabase.LoadAssetAtPath<Texture2D>( guiDir + "Texture/unityeditormemo_add.png" );
+                ThumbUp    = AssetDatabase.LoadAssetAtPath<Texture2D>( guiDir + "Texture/unityeditormemo_thumbup.png" );
+                Question      = AssetDatabase.LoadAssetAtPath<Texture2D>( guiDir + "Texture/unityeditormemo_question.png" );
+                Exclamation = AssetDatabase.LoadAssetAtPath<Texture2D>( guiDir + "Texture/unityeditormemo_exc.png" );
                 Balloon  = AssetDatabase.LoadAssetAtPath<Texture2D>( guiDir + "Texture/unityeditormemo_balloon.png" );
                 OpenLink = EditorGUIUtility.FindTexture( "winbtn_win_rest" );
-                Emotions = new Texture2D[] { null, Happy, Angry, Sad };
-                Menu     = new Texture2D[] { Home, Plus };
+                Emotions = new Texture2D[] { null, ThumbUp, Exclamation, Question };
 
                 Footer   = new Texture2D[] { null, null, null, null, null, null };
             }
 
-            public static Texture2D Happy {
+            public static Texture2D ThumbUp {
                 get;
                 private set;
             }
 
-            public static Texture2D Sad {
+            public static Texture2D Question {
                 get;
                 private set;
             }
 
-            public static Texture2D Angry {
-                get;
-                private set;
-            }
-
-            public static Texture2D Home {
-                get;
-                private set;
-            }
-
-            public static Texture2D Plus {
+            public static Texture2D Exclamation {
                 get;
                 private set;
             }
