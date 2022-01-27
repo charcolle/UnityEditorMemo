@@ -81,7 +81,7 @@ namespace charcolle.UnityEditorMemo {
             categoryTreeViewState.lastClickedID = selectCategoryId;
             categoryTreeViewState.selectedIDs = new List<int>() { selectCategoryId };
             categoryTreeView = new UnityEditorMemoCategoryWindowTreeView( categoryTreeViewState, WindowHelper.Data.Category );
-            categoryTreeView.OnContextClick += OnCategoryContextClicked;
+            categoryTreeView.OnContextClicked += OnCategoryContextClicked;
             categoryTreeView.OnCategoryOrderChanged += OnCategoryOrderChanged;
             categoryTreeView.SetSelection( categoryTreeViewState.selectedIDs, TreeViewSelectionOptions.FireSelectionChanged );
             categoryTreeView.Reload();
@@ -159,7 +159,7 @@ namespace charcolle.UnityEditorMemo {
                 if( visible != isCategoryVisible ) {
                     isCategoryVisible = visible;
                     SetHorizontalState();
-                    memoTreeView.UpdateRowHeight( isCategoryVisible ? position.width * 0.7f : position.width );
+                    memoTreeView.UpdateRowHeight( isCategoryVisible ? position.height * 0.7f : position.height );
                 }
                 var selectMenu = EditorGUILayout.Popup( 0, categoryMenu, EditorStyles.toolbarPopup, GUILayout.Width( 60 ) );
                 switch( selectMenu ) {
@@ -486,67 +486,101 @@ namespace charcolle.UnityEditorMemo {
             MemoTreeViewInitialize();
         }
 
-        private void OnMemoContextClicked( UnityEditorMemo memo ) {
+        private void OnMemoContextClicked( UnityEditorMemo memo )
+        {
             var menu = new GenericMenu();
-            menu.AddItem( new GUIContent( !memo.IsEdit ? "Edit" : "Done" ), false, () => {
-                UndoHelper.EditorMemoUndo( UndoHelper.UNDO_MEMO_EDIT );
-                memo.IsEdit = !memo.IsEdit;
-                memoTreeView.UpdateRowHeight();
-            } );
 
-            menu.AddItem( new GUIContent( "Repost" ), false, () => {
-                OnMemoDelete( memo );
-                memo.Date = DateTime.Now.RenderDate();
-                OnMemoPost( WindowHelper.GetCategory( selectCategoryId ), memo );
-            } );
+            if ( memo == null )
+            {
+                menu.AddItem( new GUIContent( "Sort/Ascending" ), false, () => {
+                    memoTreeView.SortMemo( UnityEditorMemoSort.ASCENDING );
+                    memoTreeView.Reload();
+                } );
 
-            if( !string.IsNullOrEmpty( UnityEditorMemoPrefs.Label1 ) ) {
-                menu.AddItem( new GUIContent( "Label/" + UnityEditorMemoPrefs.Label1 ), ( int )memo.Label == 1, () => {
+                menu.AddItem( new GUIContent( "Sort/Descending" ), false, () => {
+                    memoTreeView.SortMemo( UnityEditorMemoSort.DESCENDING );
+                    memoTreeView.Reload();
+                } );
+            } else
+            {
+                menu.AddItem( new GUIContent( !memo.IsEdit ? "Edit" : "Done" ), false, () => {
                     UndoHelper.EditorMemoUndo( UndoHelper.UNDO_MEMO_EDIT );
-                    memo.Label = ( UnityEditorMemoLabel )1;
+                    memo.IsEdit = !memo.IsEdit;
+                    memoTreeView.UpdateRowHeight();
                 } );
-            }
 
-            if( !string.IsNullOrEmpty( UnityEditorMemoPrefs.Label2 ) ) {
-                menu.AddItem( new GUIContent( "Label/" + UnityEditorMemoPrefs.Label2 ), ( int )memo.Label == 2, () => {
-                    UndoHelper.EditorMemoUndo( UndoHelper.UNDO_MEMO_EDIT );
-                    memo.Label = ( UnityEditorMemoLabel )2;
+                menu.AddItem( new GUIContent( "Repost" ), false, () => {
+                    OnMemoDelete( memo );
+                    memo.Date = DateTime.Now.RenderDate();
+                    OnMemoPost( WindowHelper.GetCategory( selectCategoryId ), memo );
                 } );
-            }
 
-            if( !string.IsNullOrEmpty( UnityEditorMemoPrefs.Label3 ) ) {
-                menu.AddItem( new GUIContent( "Label/" + UnityEditorMemoPrefs.Label3 ), ( int )memo.Label == 3, () => {
-                    UndoHelper.EditorMemoUndo( UndoHelper.UNDO_MEMO_EDIT );
-                    memo.Label = ( UnityEditorMemoLabel )3;
-                } );
-            }
+                if (!string.IsNullOrEmpty( UnityEditorMemoPrefs.Label1 ))
+                {
+                    menu.AddItem( new GUIContent( "Label/" + UnityEditorMemoPrefs.Label1 ), (int)memo.Label == 1, () => {
+                        UndoHelper.EditorMemoUndo( UndoHelper.UNDO_MEMO_EDIT );
+                        memo.Label = (UnityEditorMemoLabel)1;
+                    } );
+                }
 
-            if( !string.IsNullOrEmpty( UnityEditorMemoPrefs.Label4 ) ) {
-                menu.AddItem( new GUIContent( "Label/" + UnityEditorMemoPrefs.Label4 ), ( int )memo.Label == 4, () => {
-                    UndoHelper.EditorMemoUndo( UndoHelper.UNDO_MEMO_EDIT );
-                    memo.Label = ( UnityEditorMemoLabel )4;
-                } );
-            }
+                if (!string.IsNullOrEmpty( UnityEditorMemoPrefs.Label2 ))
+                {
+                    menu.AddItem( new GUIContent( "Label/" + UnityEditorMemoPrefs.Label2 ), (int)memo.Label == 2, () => {
+                        UndoHelper.EditorMemoUndo( UndoHelper.UNDO_MEMO_EDIT );
+                        memo.Label = (UnityEditorMemoLabel)2;
+                    } );
+                }
 
-            if( !string.IsNullOrEmpty( UnityEditorMemoPrefs.Label5 ) ) {
-                menu.AddItem( new GUIContent( "Label/" + UnityEditorMemoPrefs.Label5 ), ( int )memo.Label == 5, () => {
-                    UndoHelper.EditorMemoUndo( UndoHelper.UNDO_MEMO_EDIT );
-                    memo.Label = ( UnityEditorMemoLabel )5;
-                } );
-            }
+                if (!string.IsNullOrEmpty( UnityEditorMemoPrefs.Label3 ))
+                {
+                    menu.AddItem( new GUIContent( "Label/" + UnityEditorMemoPrefs.Label3 ), (int)memo.Label == 3, () => {
+                        UndoHelper.EditorMemoUndo( UndoHelper.UNDO_MEMO_EDIT );
+                        memo.Label = (UnityEditorMemoLabel)3;
+                    } );
+                }
 
-            menu.AddSeparator( "" );
+                if (!string.IsNullOrEmpty( UnityEditorMemoPrefs.Label4 ))
+                {
+                    menu.AddItem( new GUIContent( "Label/" + UnityEditorMemoPrefs.Label4 ), (int)memo.Label == 4, () => {
+                        UndoHelper.EditorMemoUndo( UndoHelper.UNDO_MEMO_EDIT );
+                        memo.Label = (UnityEditorMemoLabel)4;
+                    } );
+                }
 
-            if( !string.IsNullOrEmpty( memo.URL ) ) {
-                menu.AddItem( new GUIContent( "Open URL" ), false, () => {
-                    Application.OpenURL( memo.URL );
-                } );
+                if (!string.IsNullOrEmpty( UnityEditorMemoPrefs.Label5 ))
+                {
+                    menu.AddItem( new GUIContent( "Label/" + UnityEditorMemoPrefs.Label5 ), (int)memo.Label == 5, () => {
+                        UndoHelper.EditorMemoUndo( UndoHelper.UNDO_MEMO_EDIT );
+                        memo.Label = (UnityEditorMemoLabel)5;
+                    } );
+                }
+
                 menu.AddSeparator( "" );
-            }
 
-            menu.AddItem( new GUIContent( "Delete" ), false, () => {
-                OnMemoDelete( memo );
-            } );
+                menu.AddItem( new GUIContent( "Sort/Ascending" ), false, () => {
+                    memoTreeView.SortMemo( UnityEditorMemoSort.ASCENDING );
+                    memoTreeView.Reload();
+                } );
+
+                menu.AddItem( new GUIContent( "Sort/Descending" ), false, () => {
+                    memoTreeView.SortMemo( UnityEditorMemoSort.DESCENDING );
+                    memoTreeView.Reload();
+                } );
+
+                menu.AddSeparator( "" );
+
+                if (!string.IsNullOrEmpty( memo.URL ))
+                {
+                    menu.AddItem( new GUIContent( "Open URL" ), false, () => {
+                        Application.OpenURL( memo.URL );
+                    } );
+                    menu.AddSeparator( "" );
+                }
+
+                menu.AddItem( new GUIContent( "Delete" ), false, () => {
+                    OnMemoDelete( memo );
+                } );
+            }
 
             menu.ShowAsContext();
         }

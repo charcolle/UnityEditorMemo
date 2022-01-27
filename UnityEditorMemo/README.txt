@@ -1,5 +1,5 @@
 // UnityEditorMemo
-// ver 3.1.0
+// ver 3.1.1
 // thank you for downloading.
 
 About
@@ -56,3 +56,5 @@ Version
 
 	3.1 : UPDATE - Implement Post ShortcutKey.
 		: CHANGE - Change Emoji mark.
+
+	3.1.1 : UPDATE - Implement sorting memos.

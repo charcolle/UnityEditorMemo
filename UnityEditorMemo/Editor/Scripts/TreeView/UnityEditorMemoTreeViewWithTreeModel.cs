@@ -113,28 +113,31 @@ namespace charcolle.UnityEditorMemo {
 				throw new ArgumentException("Invalid search: cannot be null or empty", "search");
 
 			const int kItemDepth = 0; // tree is flattened when searching
+			try
+            {
 
-			Stack<T> stack = new Stack<T>();
-			foreach (var element in searchFromThis.children)
-				stack.Push((T)element);
-			while (stack.Count > 0)
-			{
-				T current = stack.Pop();
-				// Matches search?
-				if (current.name.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0)
+				Stack<T> stack = new Stack<T>();
+				foreach (var element in searchFromThis.children)
+					stack.Push( (T)element );
+				while (stack.Count > 0)
 				{
-					result.Add(new TreeViewItem<T>(current.id, kItemDepth, current.name, current));
-				}
-
-				if (current.children != null && current.children.Count > 0)
-				{
-					foreach (var element in current.children)
+					T current = stack.Pop();
+					// Matches search?
+					if (current.name.IndexOf( search, StringComparison.OrdinalIgnoreCase ) >= 0)
 					{
-						stack.Push((T)element);
+						result.Add( new TreeViewItem<T>( current.id, kItemDepth, current.name, current ) );
+					}
+
+					if (current.children != null && current.children.Count > 0)
+					{
+						foreach (var element in current.children)
+						{
+							stack.Push( (T)element );
+						}
 					}
 				}
-			}
-			SortSearchResult(result);
+				SortSearchResult( result );
+			} catch { }
 		}
 
 		protected virtual void SortSearchResult (List<TreeViewItem> rows)

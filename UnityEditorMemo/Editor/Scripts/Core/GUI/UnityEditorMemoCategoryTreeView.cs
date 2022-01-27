@@ -9,7 +9,7 @@ namespace charcolle.UnityEditorMemo {
 
     internal class UnityEditorMemoCategoryWindowTreeView : TreeView {
 
-        public event Action<UnityEditorMemoCategory> OnContextClick;
+        public event Action<UnityEditorMemoCategory> OnContextClicked;
         public event Action<List<UnityEditorMemoCategory>> OnCategoryOrderChanged;
 
         private List<UnityEditorMemoCategory> category;
@@ -55,12 +55,12 @@ namespace charcolle.UnityEditorMemo {
         }
 
         protected override void ContextClickedItem( int id ) {
-            OnContextClick( category[ id ] );
+            OnContextClicked( category[ id ] );
             Event.current.Use();
         }
 
         protected override void ContextClicked() {
-            OnContextClick( null );
+            OnContextClicked( null );
         }
 
         protected override void RowGUI( RowGUIArgs args ) {

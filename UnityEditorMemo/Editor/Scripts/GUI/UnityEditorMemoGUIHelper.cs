@@ -27,6 +27,12 @@ namespace charcolle.UnityEditorMemo {
         WHITE = 1,
     }
 
+    public enum UnityEditorMemoSort
+    {
+        ASCENDING,
+        DESCENDING,
+    }
+
     internal static class GUIHelper {
 
         public static string[] LabelMenu     = { "Normal", "Red", "Green", "Cyan", "Yellow", "Magenta" };

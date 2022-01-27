@@ -19,6 +19,7 @@ namespace charcolle.UnityEditorMemo
         public event Action<List<UnityEditorMemo>> OnMemoOrderChanged;
 
         private List<UnityEditorMemo> memo;
+        private UnityEditorMemoSort sortType = UnityEditorMemoSort.DESCENDING;
 
         public UnityEditorMemoTreeView( TreeViewState state, TreeModel<UnityEditorMemo> model, List<UnityEditorMemo> memo, float rowRectWidth )
             : base( state, model )
@@ -27,6 +28,11 @@ namespace charcolle.UnityEditorMemo
             this.rowRectWidth = rowRectWidth;
             showBorder = false;
             Reload();
+        }
+
+        public void SortMemo( UnityEditorMemoSort sortType)
+        {
+            this.sortType = sortType;
         }
 
         public void UpdateRowHeight()
@@ -43,8 +49,13 @@ namespace charcolle.UnityEditorMemo
         protected override IList<TreeViewItem> BuildRows( TreeViewItem root )
         {
             var rows = base.BuildRows( root );
-            rows = rows.Select( r => ( TreeViewItem<UnityEditorMemo> )r )
-                       .Where( m => SelectLabel == UnityEditorMemoLabel.NORMAL || m.data.Label == SelectLabel ).Select( s => ( TreeViewItem )s ).Reverse().ToList();
+            if (sortType == UnityEditorMemoSort.ASCENDING)
+                rows = rows.Select( r => (TreeViewItem<UnityEditorMemo>)r )
+                           .Where( m => SelectLabel == UnityEditorMemoLabel.NORMAL || m.data.Label == SelectLabel ).Select( s => (TreeViewItem)s ).ToList();
+            else
+                rows = rows.Select( r => (TreeViewItem<UnityEditorMemo>)r )
+                           .Where( m => SelectLabel == UnityEditorMemoLabel.NORMAL || m.data.Label == SelectLabel ).Select( s => (TreeViewItem)s ).Reverse().ToList();
+
             for ( int i = 0; i < rows.Count; i++ )
             {
                 var item = ( TreeViewItem<UnityEditorMemo> )rows[ i ];
@@ -74,6 +85,11 @@ namespace charcolle.UnityEditorMemo
             var item = FindItem( id, rootItem );
             var target = ( TreeViewItem<UnityEditorMemo> )item;
             OnContextClicked( target.data );
+        }
+
+        protected override void ContextClicked()
+        {
+            OnContextClicked( null );
         }
 
         protected override bool CanMultiSelect( TreeViewItem item )
@@ -127,7 +143,7 @@ namespace charcolle.UnityEditorMemo
             }
 
             if ( memo.IsEdit )
-                itemHeight += EditorGUIUtility.singleLineHeight + SIZE_TEX + 15f + 20f;
+                itemHeight += EditorGUIUtility.singleLineHeight + SIZE_TEX + 15f + 30f;
             if ( memo.ObjectRef.HasReferenceObject() )
                 itemHeight += EditorGUIUtility.singleLineHeight;
             itemHeight += 10f;

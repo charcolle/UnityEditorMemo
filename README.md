@@ -1,13 +1,13 @@
 [日本語のREADME](README_JA.md)
 # UnityEditorMemo
-![](https://img.shields.io/badge/version-3.1.0-brightgreen)  
+![](https://img.shields.io/badge/version-3.1.1-brightgreen)  
 You can post any texts on UnityEditor.  
 You can post questions you had during your game dev or take notes about your tasks... This asset can be used in various ways.  
 
 [AssetStore](https://assetstore.unity.com/packages/tools/utilities/unityeditormemo-81812)  
 [Package](https://github.com/charcolle/UnityEditorMemo/releases)
 
-![main](desc/unityeditormemo_ver3_main.png)
+![main](desc/unityeditormemo_ver3.1_main.png)
 
 # Supported version
 Unity 2018 or newer
