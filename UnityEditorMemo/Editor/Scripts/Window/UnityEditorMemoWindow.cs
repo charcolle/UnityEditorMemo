@@ -30,6 +30,8 @@ namespace charcolle.UnityEditorMemo {
         private static SplitterState verticalState;
         private static SplitterState horizontalState;
 
+        private UnityEditorMemoSort sortType = UnityEditorMemoSort.DESCENDING;
+
         [ MenuItem( "Window/UnityEditorMemo" )]
         private static void OpenWindow() {
             win                   = GetWindow<UnityEditorMemoWindow>();
@@ -100,6 +102,7 @@ namespace charcolle.UnityEditorMemo {
             memoTreeView.OnContextClicked += OnMemoContextClicked;
             memoTreeView.OnMemoOrderChanged += OnMemoOrderChanged;
             memoTreeView.SelectLabel = ( UnityEditorMemoLabel )selectLabel;
+            memoTreeView.SortMemo( sortType );
             memoTreeView.Reload();
         }
 
@@ -475,6 +478,8 @@ namespace charcolle.UnityEditorMemo {
             if( selectLabel == 0 )
                 postMemoLabel = 0;
             GUIUtility.keyboardControl = 0;
+            
+            sortType = memoTreeView.GetSortType();
             MemoTreeViewInitialize();
         }
 
@@ -578,6 +583,7 @@ namespace charcolle.UnityEditorMemo {
                 }
 
                 menu.AddItem( new GUIContent( "Delete" ), false, () => {
+                    sortType = memoTreeView.GetSortType();
                     OnMemoDelete( memo );
                 } );
             }

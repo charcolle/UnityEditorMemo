@@ -30,9 +30,14 @@ namespace charcolle.UnityEditorMemo
             Reload();
         }
 
-        public void SortMemo( UnityEditorMemoSort sortType)
+        public void SortMemo(UnityEditorMemoSort sortType)
         {
             this.sortType = sortType;
+        }
+
+        public UnityEditorMemoSort GetSortType()
+        {
+            return sortType;
         }
 
         public void UpdateRowHeight()
@@ -83,13 +88,14 @@ namespace charcolle.UnityEditorMemo
         protected override void ContextClickedItem( int id )
         {
             var item = FindItem( id, rootItem );
-            var target = ( TreeViewItem<UnityEditorMemo> )item;
+            var target = (TreeViewItem<UnityEditorMemo>)item;
             OnContextClicked( target.data );
+            Event.current.Use();
         }
 
         protected override void ContextClicked()
         {
-            OnContextClicked( null );
+            OnContextClicked( null ); 
         }
 
         protected override bool CanMultiSelect( TreeViewItem item )

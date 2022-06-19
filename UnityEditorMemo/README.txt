@@ -1,5 +1,5 @@
 // UnityEditorMemo
-// ver 3.1.1
+// ver 3.1.2
 // thank you for downloading.
 
 About
@@ -58,3 +58,5 @@ Version
 		: CHANGE - Change Emoji mark.
 
 	3.1.1 : UPDATE - Implement sorting memos.
+
+	3.1.2 : FIX - Fixed an issue that memos could not be deleted.
