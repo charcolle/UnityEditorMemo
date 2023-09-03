@@ -60,3 +60,5 @@ Version
 	3.1.1 : UPDATE - Implement sorting memos.
 
 	3.1.2 : FIX - Fixed an issue that memos could not be deleted.
+
+	3.1.3 : FIX - Fix an issue that search bar in Unity 2022.

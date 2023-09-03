@@ -90,11 +90,15 @@ namespace charcolle.UnityEditorMemo {
                     normal = state
                 };
 
+#if UNITY_2022_1_OR_NEWER
+                SearchField       = new GUIStyle( "ToolbarSearchTextField" );
+                SearchFieldCancel = new GUIStyle( "ToolbarSearchCancelButton" );
+#else
                 SearchField       = new GUIStyle( "ToolbarSeachTextField" );
-
                 SearchFieldCancel = new GUIStyle( "ToolbarSeachCancelButton" );
+#endif
 
-                LargeButtonLeft   = new GUIStyle( "LargeButtonLeft" );
+                LargeButtonLeft = new GUIStyle( "LargeButtonLeft" );
 
                 LargeButtonMid    = new GUIStyle( "LargeButtonMid" );
 

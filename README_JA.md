@@ -1,5 +1,5 @@
 # UnityEditorMemo
-![](https://img.shields.io/badge/version-3.1.0-brightgreen)  
+![](https://img.shields.io/badge/version-3.1.3-brightgreen)  
 UnityEditor上でメモを取ることが出来ます。  
 開発中に疑問に思ったことや、次エディタを開いたときに何から始めるかを記述するなど、様々な用途で使うことができます。  
   
